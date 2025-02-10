@@ -1,0 +1,218 @@
+openapi: 3.0.0
+info:
+  title: ChemINF-EDU API
+  version: 1.0.0
+servers:
+  - url: http://localhost:8050
+paths:
+  /api/molecules:
+    get:
+      summary: Get all molecules
+      responses:
+        '200':
+          description: List of molecules.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Molecule'
+        '500':
+          description: Internal server error.
+    post:
+      summary: Create a new molecule
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewMolecule'
+      responses:
+        '201':
+          description: Molecule created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        '400':
+          description: Invalid request payload.
+        '500':
+          description: Internal server error.
+  /api/molecules/{id}:
+    parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+    put:
+      summary: Update a molecule
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewMolecule'
+      responses:
+        '200':
+          description: Molecule updated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        '400':
+          description: Invalid request payload.
+        '500':
+          description: Internal server error.
+    delete:
+      summary: Delete a molecule
+      responses:
+        '200':
+          description: Molecule deleted successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        '500':
+          description: Internal server error.
+  /api/inventory:
+    get:
+      summary: Get all inventory entries
+      responses:
+        '200':
+          description: List of inventory entries.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Inventory'
+        '500':
+          description: Internal server error.
+    post:
+      summary: Create a new inventory entry
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewInventory'
+      responses:
+        '201':
+          description: Inventory entry created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        '400':
+          description: Invalid request payload.
+        '500':
+          description: Internal server error.
+  /api/inventory/{id}:
+    parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+    put:
+      summary: Update an inventory entry
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateInventory'
+      responses:
+        '200':
+          description: Inventory entry updated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        '400':
+          description: Invalid request payload.
+        '500':
+          description: Internal server error.
+    delete:
+      summary: Delete an inventory entry
+      responses:
+        '200':
+          description: Inventory entry deleted successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        '500':
+          description: Internal server error.
+  /api/inventory/search:
+    get:
+      summary: Search inventory entries by molecule name
+      parameters:
+        - in: query
+          name: q
+          schema:
+            type: string
+          description: Substring to search in MoleculeUpacName.
+      responses:
+        '200':
+          description: Search results.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Inventory'
+        '500':
+          description: Internal server error.
+components:
+  schemas:
+    Molecule:
+      type: object
+      properties:
+        id:
+          type: integer
+        MoleculeUpacName:
+          type: string
+        SMILES:
+          type: string
+    NewMolecule:
+      type: object
+      properties:
+        MoleculeUpacName:
+          type: string
+      required:
+        - MoleculeUpacName
+    Inventory:
+      type: object
+      properties:
+        id:
+          type: integer
+        MoleculeUpacName:
+          type: string
+        amount:
+          type: integer
+        unit:
+          type: string
+    NewInventory:
+      type: object
+      properties:
+        MoleculeUpacName:
+          type: string
+        amount:
+          type: integer
+      required:
+        - MoleculeUpacName
+        - amount
+    UpdateInventory:
+      type: object
+      properties:
+        amount:
+          type: integer
+      required:
+        - amount
+    Message:
+      type: object
+      properties:
+        message:
+          type: string

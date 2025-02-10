@@ -1,0 +1,43 @@
+-----------
+ACTIVATE
+-----------
+python -m venv .venv
+
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+.venv\Scripts\Activate.ps1
+
+Configure VS Code to Use the Virtual Environment
+
+Press <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>P</kbd> (Windows/Linux) 
+Type and select Python: Select Interpreter.
+In the list of available interpreters, choose the one that points to 
+your .venv directory (it should look similar to ./.venv/bin/python or .\.venv\Scripts\python.exe).
+
+$env:OPENAI_API_KEY="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"
+
+$env:ANTHROPIC_API_KEY="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"
+
+Get-ChildItem Env:
+
+------------
+bash auf PythonAnywhere
+------------
+Neuer ssh
+    3  git remote -v
+    4  ssh -T git@github.com
+    5  ls -al ~/.ssh
+    6  ssh-keygen -t ed25519 -C "thorsten.gressling@gressling.com"
+    7  eval "$(ssh-agent -s)"
+    8  ssh-add ~/.ssh/id_ed25519
+    9  cat ~/.ssh/id_ed25519.pub
+   10  ssh -T git@github.com
+
+   13  rm -rf paramus
+   15  git clone git@github.com:Gressling/paramus.git
+   16  cd paramus/
+
+nslookup prod.paramus.app
+
+git pull origin main
+
+pip install -r requirements.txt
