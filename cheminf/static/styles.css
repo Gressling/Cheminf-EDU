@@ -56,6 +56,18 @@ nav ul li a:hover {
     background-color: var(--hover-bg);
 }
 
+/* Navigation section headings */
+nav .nav-section {
+  margin-bottom: 20px;
+}
+
+nav .nav-section h2 {
+  text-align: center;
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+  color: var(--accent-color);
+}
+
 /* Card style for content sections */
 .card {
     background-color: var(--card-bg);
