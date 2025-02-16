@@ -1,5 +1,5 @@
 from flask import request, jsonify
-from cheminf.db import get_db_connection, get_all_rows
+from cheminf.db.db import get_db_connection, get_all_rows
 from cheminf.config import DB_NAME, DB_PREFIX
 from cheminf.app_server import server  # Use the published Flask server
 

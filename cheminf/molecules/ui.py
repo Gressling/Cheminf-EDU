@@ -1,7 +1,7 @@
 from dash import dcc, html, Input, Output, State, dash_table, exceptions
 import dash
 from cheminf.app_server import server  # Use the shared Flask server
-from cheminf.db import get_all_rows, get_db_connection
+from cheminf.db.db import get_all_rows, get_db_connection
 from cheminf.config import DB_NAME, DB_PREFIX
 
 # Import RDKit and required modules for image generation

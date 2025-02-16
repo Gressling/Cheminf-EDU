@@ -1,7 +1,7 @@
 from dash import dcc, html, Input, Output, State, exceptions, dash_table
 import dash
 from cheminf.app_server import server
-from cheminf.db import get_db_connection
+from cheminf.db.db import get_db_connection
 from cheminf.config import DB_NAME, DB_PREFIX
 
 # Build table name for inventory data
