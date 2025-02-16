@@ -12,9 +12,10 @@ import cheminf.inventory.ui  # inventory dash app
 import cheminf.molecules.rest_api  # REST API endpoints
 import cheminf.inventory.rest_api  # register inventory API endpoints
 
-# Set secret key for sessions (this should be kept secret)
+# Load environment variables
 load_dotenv()
 server.secret_key = os.getenv('SECRET_KEY')
+instance_name = os.getenv('INSTANCE')
 
 # --- Basic Login/Logout Implementation for UI only ---
 
@@ -48,7 +49,7 @@ def login():
     <html lang="en">
       <head>
         <meta charset="utf-8">
-        <title>Login - ChemINF-EDU</title>
+        <title>Login - ChemINF-EDU {{ instance_name }}</title>
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
       </head>
@@ -58,7 +59,7 @@ def login():
         </header>
         <div class="container">
           <div class="card">
-            <h2>Please Log In</h2>
+            <h2>Please Log In to {{ instance_name }} system</h2>
             {% if error %}
               <p style="color:red;">{{ error }}</p>
             {% endif %}
@@ -79,7 +80,7 @@ def login():
         </div>
       </body>
     </html>
-    """, error=error)
+    """, error=error, instance_name=instance_name)
 
 @server.route('/logout')
 def logout():
@@ -94,7 +95,7 @@ START_PAGE = """
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>ChemINF-EDU Start Page</title>
+    <title>ChemINF-EDU @{{ instance_name }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
   </head>
@@ -122,7 +123,7 @@ START_PAGE = """
         </div>
       </nav>
       <div class="card">
-        <h2>Welcome to ChemINF-EDU!</h2>
+        <h2>Welcome to Cheminf-EDU ({{ instance_name }})</h2>
         <p>Select one of the options above to start exploring our cheminformatics platform.</p>
       </div>
     </div>
@@ -132,7 +133,7 @@ START_PAGE = """
 
 @server.route('/')
 def index():
-    return render_template_string(START_PAGE)
+    return render_template_string(START_PAGE, instance_name=instance_name)
 
 if __name__ == '__main__':
     server.run(debug=True, port=8050)
