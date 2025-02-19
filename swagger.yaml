@@ -165,6 +165,164 @@ paths:
                   $ref: '#/components/schemas/Inventory'
         '500':
           description: Internal server error.
+  /api/projects:
+    get:
+      summary: Get all projects
+      responses:
+        '200':
+          description: List of projects.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Project'
+        '500':
+          description: Internal server error.
+    post:
+      summary: Create a new project
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewProject'
+      responses:
+        '201':
+          description: Project created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        '400':
+          description: Invalid request payload.
+        '500':
+          description: Internal server error.
+  /api/projects/{id}:
+    parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+    put:
+      summary: Update a project
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewProject'
+      responses:
+        '200':
+          description: Project updated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        '400':
+          description: Invalid request payload.
+        '500':
+          description: Internal server error.
+    delete:
+      summary: Delete a project and its associated tasks
+      responses:
+        '200':
+          description: Project and associated tasks deleted successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        '500':
+          description: Internal server error.
+  /api/projects/{project_id}/tasks:
+    get:
+      summary: Get all tasks for a project
+      parameters:
+        - in: path
+          name: project_id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: List of tasks for the given project.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Task'
+        '500':
+          description: Internal server error.
+    post:
+      summary: Create a new task for a project
+      parameters:
+        - in: path
+          name: project_id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewTask'
+      responses:
+        '201':
+          description: Task created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        '400':
+          description: Invalid request payload.
+        '500':
+          description: Internal server error.
+  /api/tasks/{id}:
+    put:
+      summary: Update a task
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewTask'
+      responses:
+        '200':
+          description: Task updated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        '400':
+          description: Invalid request payload.
+        '500':
+          description: Internal server error.
+    delete:
+      summary: Delete a task
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Task deleted successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        '500':
+          description: Internal server error.
 components:
   schemas:
     Molecule:
@@ -211,6 +369,40 @@ components:
           type: integer
       required:
         - amount
+    Project:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+    NewProject:
+      type: object
+      properties:
+        name:
+          type: string
+      required:
+        - name
+    Task:
+      type: object
+      properties:
+        id:
+          type: integer
+        project_id:
+          type: integer
+        description:
+          type: string
+        content:
+          type: string
+    NewTask:
+      type: object
+      properties:
+        description:
+          type: string
+        content:
+          type: string
+      required:
+        - description
     Message:
       type: object
       properties:

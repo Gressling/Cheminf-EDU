@@ -36,7 +36,7 @@
       </div>
       <h1>REST API Documentation</h1>
       <div class="doc-container">
-        <!-- Molecules API endpoints -->
+        <!-- Molecules Endpoints (existing) -->
         <div class="endpoint">
           <h2>GET /api/molecules</h2>
           <p><strong>Summary:</strong> Get all molecules</p>
@@ -47,17 +47,18 @@
           </ul>
           <p><strong>Example Request:</strong></p>
           <pre><code>GET /api/molecules HTTP/1.1
-Host: localhost:8050
-          </code></pre>
+Host: localhost:8050</code></pre>
           <p><strong>Example Response (200):</strong></p>
           <pre><code>[
   {
     "id": 1,
-    "MoleculeUpacName": "Water"
+    "MoleculeUpacName": "Water",
+    "SMILES": "O"
   },
   {
     "id": 2,
-    "MoleculeUpacName": "Ethanol"
+    "MoleculeUpacName": "Ethanol",
+    "SMILES": "CCO"
   }
 ]</code></pre>
         </div>
@@ -77,12 +78,9 @@ Content-Type: application/json
 
 {
   "MoleculeUpacName": "Acetone"
-}
-          </code></pre>
+}</code></pre>
           <p><strong>Example Response (201):</strong></p>
           <pre><code>{
-  "id": 3,
-  "MoleculeUpacName": "Acetone",
   "message": "Molecule created successfully"
 }</code></pre>
         </div>
@@ -103,8 +101,7 @@ Content-Type: application/json
 
 {
   "MoleculeUpacName": "Isopropanol"
-}
-          </code></pre>
+}</code></pre>
           <p><strong>Example Response (200):</strong></p>
           <pre><code>{
   "message": "Molecule updated successfully"
@@ -121,14 +118,13 @@ Content-Type: application/json
           </ul>
           <p><strong>Example Request:</strong></p>
           <pre><code>DELETE /api/molecules/3 HTTP/1.1
-Host: localhost:8050
-          </code></pre>
+Host: localhost:8050</code></pre>
           <p><strong>Example Response (200):</strong></p>
           <pre><code>{
   "message": "Molecule deleted successfully"
 }</code></pre>
         </div>
-        <!-- Inventory API endpoints -->
+        <!-- Inventory Endpoints (existing) -->
         <div class="endpoint">
           <h2>GET /api/inventory</h2>
           <p><strong>Summary:</strong> Get all inventory entries</p>
@@ -244,6 +240,186 @@ Host: localhost:8050
     "unit": "ml"
   }
 ]</code></pre>
+        </div>
+        <!-- Projects Endpoints -->
+        <div class="endpoint">
+          <h2>GET /api/projects</h2>
+          <p><strong>Summary:</strong> Get all projects</p>
+          <p><strong>Responses:</strong></p>
+          <ul>
+            <li>200: List of projects (array of Project objects)</li>
+            <li>500: Internal server error</li>
+          </ul>
+          <p><strong>Example Request:</strong></p>
+          <pre><code>GET /api/projects HTTP/1.1
+Host: localhost:8050</code></pre>
+          <p><strong>Example Response (200):</strong></p>
+          <pre><code>[
+  {
+    "id": 1,
+    "name": "Project Alpha"
+  },
+  {
+    "id": 2,
+    "name": "Project Beta"
+  }
+]</code></pre>
+        </div>
+        <div class="endpoint">
+          <h2>POST /api/projects</h2>
+          <p><strong>Summary:</strong> Create a new project</p>
+          <p><strong>Request Body:</strong> NewProject object</p>
+          <p><strong>Responses:</strong></p>
+          <ul>
+            <li>201: Project created successfully</li>
+            <li>400: Invalid request payload</li>
+            <li>500: Internal server error</li>
+          </ul>
+          <p><strong>Example Request:</strong></p>
+          <pre><code>POST /api/projects HTTP/1.1
+Content-Type: application/json
+
+{
+  "name": "New Project"
+}</code></pre>
+          <p><strong>Example Response (201):</strong></p>
+          <pre><code>{
+  "message": "Project created successfully"
+}</code></pre>
+        </div>
+        <div class="endpoint">
+          <h2>PUT /api/projects/{id}</h2>
+          <p><strong>Summary:</strong> Update a project</p>
+          <p><strong>Path Parameter:</strong> id (integer)</p>
+          <p><strong>Request Body:</strong> NewProject object</p>
+          <p><strong>Responses:</strong></p>
+          <ul>
+            <li>200: Project updated successfully</li>
+            <li>400: Invalid request payload</li>
+            <li>500: Internal server error</li>
+          </ul>
+          <p><strong>Example Request:</strong></p>
+          <pre><code>PUT /api/projects/1 HTTP/1.1
+Content-Type: application/json
+
+{
+  "name": "Updated Project Name"
+}</code></pre>
+          <p><strong>Example Response (200):</strong></p>
+          <pre><code>{
+  "message": "Project updated successfully"
+}</code></pre>
+        </div>
+        <div class="endpoint">
+          <h2>DELETE /api/projects/{id}</h2>
+          <p><strong>Summary:</strong> Delete a project and its associated tasks</p>
+          <p><strong>Path Parameter:</strong> id (integer)</p>
+          <p><strong>Responses:</strong></p>
+          <ul>
+            <li>200: Project and associated tasks deleted successfully</li>
+            <li>500: Internal server error</li>
+          </ul>
+          <p><strong>Example Request:</strong></p>
+          <pre><code>DELETE /api/projects/1 HTTP/1.1
+Host: localhost:8050</code></pre>
+          <p><strong>Example Response (200):</strong></p>
+          <pre><code>{
+  "message": "Project deleted successfully"
+}</code></pre>
+        </div>
+        <!-- Tasks Endpoints -->
+        <div class="endpoint">
+          <h2>GET /api/projects/{project_id}/tasks</h2>
+          <p><strong>Summary:</strong> Get all tasks for a project</p>
+          <p><strong>Path Parameter:</strong> project_id (integer)</p>
+          <p><strong>Responses:</strong></p>
+          <ul>
+            <li>200: List of tasks for the given project (array of Task objects)</li>
+            <li>500: Internal server error</li>
+          </ul>
+          <p><strong>Example Request:</strong></p>
+          <pre><code>GET /api/projects/1/tasks HTTP/1.1
+Host: localhost:8050</code></pre>
+          <p><strong>Example Response (200):</strong></p>
+          <pre><code>[
+  {
+    "id": 101,
+    "project_id": 1,
+    "description": "Task One",
+    "content": "Details about task one"
+  },
+  {
+    "id": 102,
+    "project_id": 1,
+    "description": "Task Two",
+    "content": "Details about task two"
+  }
+]</code></pre>
+        </div>
+        <div class="endpoint">
+          <h2>POST /api/projects/{project_id}/tasks</h2>
+          <p><strong>Summary:</strong> Create a new task for a project</p>
+          <p><strong>Path Parameter:</strong> project_id (integer)</p>
+          <p><strong>Request Body:</strong> NewTask object</p>
+          <p><strong>Responses:</strong></p>
+          <ul>
+            <li>201: Task created successfully</li>
+            <li>400: Invalid request payload</li>
+            <li>500: Internal server error</li>
+          </ul>
+          <p><strong>Example Request:</strong></p>
+          <pre><code>POST /api/projects/1/tasks HTTP/1.1
+Content-Type: application/json
+
+{
+  "description": "New Task",
+  "content": "Task details"
+}</code></pre>
+          <p><strong>Example Response (201):</strong></p>
+          <pre><code>{
+  "message": "Task created successfully"
+}</code></pre>
+        </div>
+        <div class="endpoint">
+          <h2>PUT /api/tasks/{id}</h2>
+          <p><strong>Summary:</strong> Update a task</p>
+          <p><strong>Path Parameter:</strong> id (integer)</p>
+          <p><strong>Request Body:</strong> NewTask object</p>
+          <p><strong>Responses:</strong></p>
+          <ul>
+            <li>200: Task updated successfully</li>
+            <li>400: Invalid request payload</li>
+            <li>500: Internal server error</li>
+          </ul>
+          <p><strong>Example Request:</strong></p>
+          <pre><code>PUT /api/tasks/101 HTTP/1.1
+Content-Type: application/json
+
+{
+  "description": "Updated Task",
+  "content": "Updated task details"
+}</code></pre>
+          <p><strong>Example Response (200):</strong></p>
+          <pre><code>{
+  "message": "Task updated successfully"
+}</code></pre>
+        </div>
+        <div class="endpoint">
+          <h2>DELETE /api/tasks/{id}</h2>
+          <p><strong>Summary:</strong> Delete a task</p>
+          <p><strong>Path Parameter:</strong> id (integer)</p>
+          <p><strong>Responses:</strong></p>
+          <ul>
+            <li>200: Task deleted successfully</li>
+            <li>500: Internal server error</li>
+          </ul>
+          <p><strong>Example Request:</strong></p>
+          <pre><code>DELETE /api/tasks/101 HTTP/1.1
+Host: localhost:8050</code></pre>
+          <p><strong>Example Response (200):</strong></p>
+          <pre><code>{
+  "message": "Task deleted successfully"
+}</code></pre>
         </div>
       </div>
     </div>

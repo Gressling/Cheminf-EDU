@@ -7,10 +7,13 @@ from cheminf.app_server import server
 import os
 from dotenv import load_dotenv
 # Import dash apps so that they register with the shared server.
-import cheminf.molecules.ui  # molecules dash app
-import cheminf.inventory.ui  # inventory dash app
-import cheminf.molecules.rest_api  # REST API endpoints
-import cheminf.inventory.rest_api  # register inventory API endpoints
+import cheminf.molecules.ui         # molecules dash app
+import cheminf.inventory.ui         # inventory dash app
+import cheminf.projects.ui_projects # projects maintenance dash app
+import cheminf.projects.ui_tasks    # tasks maintenance dash app
+import cheminf.projects.rest_api    # REST API endpoints for projects/tasks
+import cheminf.molecules.rest_api   # REST API endpoints for molecules
+import cheminf.inventory.rest_api   # REST API endpoints for inventory
 
 # Load environment variables
 load_dotenv()
@@ -54,9 +57,7 @@ def login():
         <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
       </head>
       <body>
-        <header>
-          <h1>ChemINF-EDU</h1>
-        </header>
+        <header><h1>ChemINF-EDU</h1></header>
         <div class="container">
           <div class="card">
             <h2>Please Log In to {{ instance_name }} system</h2>
@@ -89,7 +90,7 @@ def logout():
 
 # --- End Basic Login/Logout Implementation ---
 
-# Polished start page template with grouped navigation sections.
+# Polished start page template with grouped navigation sections updated with new URLs.
 START_PAGE = """
 <!DOCTYPE html>
 <html lang="en">
@@ -111,6 +112,8 @@ START_PAGE = """
           <ul>
             <li><a href="/molecules/">Molecules</a></li>
             <li><a href="/inventory/">Inventory</a></li>
+            <li><a href="/projects/">Projects Maintenance</a></li>
+            <li><a href="/tasks/">Tasks Maintenance</a></li>
           </ul>
         </div>
         <div class="nav-section">
@@ -118,6 +121,7 @@ START_PAGE = """
           <ul>
             <li><a href="/api/molecules">REST API: Molecules Data (JSON)</a></li>
             <li><a href="/api/inventory">REST API: Inventory Data (JSON)</a></li>
+            <li><a href="/api/projects">Projects API (JSON)</a></li>
             <li><a href="/static/REST_documentation.html">REST API Documentation</a></li>
           </ul>
         </div>

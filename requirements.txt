@@ -5,3 +5,4 @@ pandas
 python-dotenv
 rdkit
 flask-jwt-extended
+dash_bootstrap_components
