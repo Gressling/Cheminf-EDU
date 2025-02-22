@@ -17,7 +17,7 @@ import cheminf.inventory.rest_api   # REST API endpoints for inventory
 import cheminf.reactions.rest_api   # Register Reactions REST endpoints
 import cheminf.reactions.ui_reactions # (If you create a UI for reactions)
 import cheminf.reactions.ui_reactionparticipants  # For reaction participants UI
-
+import cheminf.reactions.ui_overview  # Reaction Overview UI page
 
 # Load environment variables
 load_dotenv()
@@ -44,7 +44,6 @@ def login():
     if request.method == 'POST':
         username = request.form.get('username')
         password = request.form.get('password')
-        # Use hard-coded credentials; adjust as needed
         load_dotenv()
         if username == os.getenv('ADMIN_USERNAME') and password == os.getenv('ADMIN_PASSWORD'):
             session['authenticated'] = True
@@ -94,7 +93,48 @@ def logout():
 
 # --- End Basic Login/Logout Implementation ---
 
-# Polished start page template with grouped navigation sections updated with new URLs.
+# Home route with descriptive text
+@server.route('/home')
+def home():
+    home_content = """
+    <!DOCTYPE html>
+    <html lang="en">
+      <head>
+        <meta charset="utf-8">
+        <title>Welcome to ChemINF-EDU</title>
+        <style>
+          body { font-family: Arial, sans-serif; margin: 20px; color: #eee }
+          h2 { color: #eee; }
+          ul { margin-top: 10px; }
+          ul li { margin-bottom: 5px; }
+        </style>
+      </head>
+      <body>
+        <h2>Welcome to ChemINF-EDU</h2>
+        <p>
+          ChemINF-EDU is a comprehensive cheminformatics system designed to support a wide range of chemical data management tasks.
+          It combines powerful user interfaces with robust RESTful APIs to provide seamless integration across various modules.
+        </p>
+        <p>This platform offers the following modules:</p>
+        <ul>
+          <li><strong>Molecules:</strong> Manage and view detailed information about chemical molecules.</li>
+          <li><strong>Inventory:</strong> Track and manage chemical inventory data including amounts and storage details.</li>
+          <li><strong>Projects Maintenance:</strong> Organize and monitor projects related to chemical research and analysis.</li>
+          <li><strong>Tasks Maintenance:</strong> Manage individual tasks and workflows within larger projects.</li>
+          <li><strong>Reactions Maintenance:</strong> Define, view, and update chemical reaction data and kinetics.</li>
+          <li><strong>Reaction Participants Maintenance:</strong> Oversee reaction components including reactants, products, and catalysts with their respective stoichiometric details.</li>
+          <li><strong>Reaction Overview:</strong> Generate comprehensive overviews and chemical equations from aggregated reaction data.</li>
+          <li><strong>REST API:</strong> Leverage a suite of RESTful endpoints for easy integration, automation, and data sharing across various applications.</li>
+        </ul>
+        <p>
+          Use the navigation menu on the left to learn more about each module and start interacting with the platform.
+        </p>
+      </body>
+    </html>
+    """
+    return home_content
+
+# Updated start page template using an iframe to load pages on the right
 START_PAGE = """
 <!DOCTYPE html>
 <html lang="en">
@@ -102,40 +142,115 @@ START_PAGE = """
     <meta charset="utf-8">
     <title>ChemINF-EDU @{{ instance_name }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+      body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        color: #fff; /* white font on startpage */
+        background: #111; /* dark background for whole app */
+      }
+      .header {
+        background: #333;
+        color: white;
+        padding: 10px 20px;
+      }
+      .header h1 {
+        margin: 0;
+        display: inline-block;
+      }
+      .header a {
+        color: white;
+        text-decoration: none;
+        float: right;
+        margin-top: 5px;
+      }
+      .container {
+        width: 130%; /* 30% wider overall */
+        margin: 0 auto; /* center container */
+        display: flex;
+        height: calc(100vh - 60px);
+      }
+      .nav {
+        width: 250px;
+        background: #222; /* dark background */
+        padding: 20px;
+        box-sizing: border-box;
+        overflow-y: auto;
+        border-right: 1px solid #444;
+      }
+      .nav h2 {
+        margin-top: 0;
+        color: #fff;
+      }
+      .nav ul {
+        list-style: none;
+        padding: 0;
+      }
+      .nav li {
+        margin: 10px 0;
+      }
+      .nav li a {
+        text-decoration: none;
+        color: #fff;
+      }
+      .nav li a:hover {
+        color: #00aced;
+      }
+      .content {
+        flex-grow: 1;
+      }
+      .content iframe {
+        width: 100%;
+        height: 100%;
+        border: none;
+      }
+      /* Additional styling for nav footer */
+      .nav .footer {
+        margin-top: 20px;
+        border-top: 1px solid #444;
+        padding-top: 10px;
+      }
+    </style>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
   </head>
   <body>
-    <header>
+    <div class="header">
       <h1>ChemINF-EDU</h1>
-      <a href="{{ url_for('logout') }}" style="float:right; margin:10px; color:white;">Logout</a>
-    </header>
+      <a href="{{ url_for('logout') }}" target="_self">Logout</a>
+    </div>
     <div class="container">
-      <nav>
-        <div class="nav-section">
-          <h2>Programs</h2>
+      <div class="nav">
+        <!-- Top navigation link for Home -->
+        <ul>
+          <li><a href="/home" target="mainFrame">Home</a></li>
+        </ul>
+        <h2>Programs</h2>
+        <ul>
+          <li><a href="/molecules/" target="mainFrame">Molecules</a></li>
+          <li><a href="/inventory/" target="mainFrame">Inventory</a></li>
+          <li><a href="/projects/" target="mainFrame">Projects Maintenance</a></li>
+          <li><a href="/tasks/" target="mainFrame">Tasks Maintenance</a></li>
+          <li><a href="/reactions/" target="mainFrame">Reactions Maintenance</a></li>
+          <li><a href="/reactions/participants/" target="mainFrame">Reaction Participants Maintenance</a></li>
+          <li><a href="/reactions/overview/" target="mainFrame">Reaction Overview</a></li>
+        </ul>
+        <h2>REST Resources</h2>
+        <ul>
+          <li><a href="/api/molecules" target="mainFrame">REST API: Molecules Data (JSON)</a></li>
+          <li><a href="/api/inventory" target="mainFrame">REST API: Inventory Data (JSON)</a></li>
+          <li><a href="/api/projects" target="mainFrame">Projects API (JSON)</a></li>
+          <li><a href="/api/reactions" target="mainFrame">REST API: Reactions Data (JSON)</a></li>
+          <li><a href="/static/REST_documentation.html" target="mainFrame">REST API Documentation</a></li>
+        </ul>
+        <!-- Footer navigation with Logout -->
+        <div class="footer">
           <ul>
-            <li><a href="/molecules/">Molecules</a></li>
-            <li><a href="/inventory/">Inventory</a></li>
-            <li><a href="/projects/">Projects Maintenance</a></li>
-            <li><a href="/tasks/">Tasks Maintenance</a></li>
-            <li><a href="/reactions/">Reactions Maintenance</a></li>
-            <li><a href="/reactions/participants/">Reaction Participants Maintenance</a></li>
+            <li><a href="{{ url_for('logout') }}" target="_self">Logout</a></li>
           </ul>
         </div>
-        <div class="nav-section">
-          <h2>REST Resources</h2>
-          <ul>
-            <li><a href="/api/molecules">REST API: Molecules Data (JSON)</a></li>
-            <li><a href="/api/inventory">REST API: Inventory Data (JSON)</a></li>
-            <li><a href="/api/projects">Projects API (JSON)</a></li>
-            <li><a href="/api/reactions">REST API: Reactions Data (JSON)</a></li>
-            <li><a href="/static/REST_documentation.html">REST API Documentation</a></li>
-          </ul>
-        </div>
-      </nav>
-      <div class="card">
-        <h2>Welcome to Cheminf-EDU ({{ instance_name }})</h2>
-        <p>Select one of the options above to start exploring our cheminformatics platform.</p>
+      </div>
+      <div class="content">
+        <iframe name="mainFrame" src="/home"></iframe>
       </div>
     </div>
   </body>

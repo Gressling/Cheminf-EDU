@@ -3,8 +3,24 @@ from cheminf.db.db import get_db_connection
 from cheminf.config import DB_NAME, DB_PREFIX
 from cheminf.app_server import server
 
-# Construct full table name for reaction participants.
+# Construct full table names (if needed)
+REACTIONS_TABLE = f"{DB_NAME}.{DB_PREFIX}reactions"
 REACTIONPARTICIPANTS_TABLE = f"{DB_NAME}.{DB_PREFIX}reactionparticipants"
+MOLECULES_TABLE = f"{DB_NAME}.{DB_PREFIX}molecules"
+
+@server.route("/api/reactions", methods=["GET"])
+def api_get_reactions():
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+        query = f"SELECT * FROM {REACTIONS_TABLE}"
+        cursor.execute(query)
+        reactions = cursor.fetchall()
+        cursor.close()
+        conn.close()
+        return jsonify(reactions), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 # ---------- Reaction Participants Endpoints ----------
 
@@ -71,5 +87,42 @@ def api_delete_reactionparticipant(reaction_id, molecule_id, role):
         cursor.close()
         connection.close()
         return jsonify({"message": "Reaction participant deleted successfully"}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@server.route("/api/reactions/overview/<int:reaction_id>", methods=["GET"])
+def api_reaction_overview(reaction_id):
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+        query = f"""
+        SELECT 
+          r.ReactionName,
+          r.ReactionDescription,
+          CONCAT(
+            'Reactants: ', GROUP_CONCAT(CASE WHEN rp.Role = 'reactant' 
+                                              THEN CONCAT(rp.StoichiometricCoefficient, ' ', m.MoleculeUpacName, ' (', m.SMILES, ')')
+                                              END SEPARATOR ' + '),
+            ' | Products: ', GROUP_CONCAT(CASE WHEN rp.Role = 'product' 
+                                              THEN CONCAT(rp.StoichiometricCoefficient, ' ', m.MoleculeUpacName, ' (', m.SMILES, ')')
+                                              END SEPARATOR ' + '),
+            ' | Catalysts: ', GROUP_CONCAT(CASE WHEN rp.Role = 'catalyst' 
+                                              THEN CONCAT(rp.StoichiometricCoefficient, ' ', m.MoleculeUpacName, ' (', m.SMILES, ')')
+                                              END SEPARATOR ', ')
+          ) AS ReactionEquation
+        FROM {REACTIONS_TABLE} r
+        JOIN {REACTIONPARTICIPANTS_TABLE} rp ON r.ReactionID = rp.ReactionID
+        JOIN {MOLECULES_TABLE} m ON rp.MoleculeID = m.id
+        WHERE r.ReactionID = %s
+        GROUP BY r.ReactionID, r.ReactionName, r.ReactionDescription;
+        """
+        cursor.execute(query, (reaction_id,))
+        result = cursor.fetchone()
+        cursor.close()
+        conn.close()
+        if result:
+            return jsonify(result), 200
+        else:
+            return jsonify({"error": "Reaction not found"}), 404
     except Exception as e:
         return jsonify({"error": str(e)}), 500
