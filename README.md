@@ -1,6 +1,5 @@
 # Cheminf-EDU
- 
-Welcome to ChemINF-EDU
+
 ChemINF-EDU is a educational cheminformatics system designed to support a wide range of chemical data management tasks. It combines powerful user interfaces with robust RESTful APIs to provide seamless integration across various modules.
 
 This platform offers the following modules:
