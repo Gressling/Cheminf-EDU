@@ -14,6 +14,10 @@ import cheminf.projects.ui_tasks    # tasks maintenance dash app
 import cheminf.projects.rest_api    # REST API endpoints for projects/tasks
 import cheminf.molecules.rest_api   # REST API endpoints for molecules
 import cheminf.inventory.rest_api   # REST API endpoints for inventory
+import cheminf.reactions.rest_api   # Register Reactions REST endpoints
+import cheminf.reactions.ui_reactions # (If you create a UI for reactions)
+import cheminf.reactions.ui_reactionparticipants  # For reaction participants UI
+
 
 # Load environment variables
 load_dotenv()
@@ -114,6 +118,8 @@ START_PAGE = """
             <li><a href="/inventory/">Inventory</a></li>
             <li><a href="/projects/">Projects Maintenance</a></li>
             <li><a href="/tasks/">Tasks Maintenance</a></li>
+            <li><a href="/reactions/">Reactions Maintenance</a></li>
+            <li><a href="/reactions/participants/">Reaction Participants Maintenance</a></li>
           </ul>
         </div>
         <div class="nav-section">
@@ -122,6 +128,7 @@ START_PAGE = """
             <li><a href="/api/molecules">REST API: Molecules Data (JSON)</a></li>
             <li><a href="/api/inventory">REST API: Inventory Data (JSON)</a></li>
             <li><a href="/api/projects">Projects API (JSON)</a></li>
+            <li><a href="/api/reactions">REST API: Reactions Data (JSON)</a></li>
             <li><a href="/static/REST_documentation.html">REST API Documentation</a></li>
           </ul>
         </div>

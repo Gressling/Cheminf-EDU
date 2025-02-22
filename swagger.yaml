@@ -323,6 +323,196 @@ paths:
                 $ref: '#/components/schemas/Message'
         '500':
           description: Internal server error.
+  /api/reactions:
+    get:
+      summary: Get all reactions
+      responses:
+        '200':
+          description: List of reactions (array of Reaction objects).
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Reaction'
+        '500':
+          description: Internal server error.
+    post:
+      summary: Create a new reaction
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewReaction'
+      responses:
+        '201':
+          description: Reaction created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        '400':
+          description: Invalid request payload.
+        '500':
+          description: Internal server error.
+  /api/reactions/{id}:
+    parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+    put:
+      summary: Update a reaction
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewReaction'
+      responses:
+        '200':
+          description: Reaction updated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        '400':
+          description: Invalid request payload.
+        '500':
+          description: Internal server error.
+    delete:
+      summary: Delete a reaction
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Reaction deleted successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        '500':
+          description: Internal server error.
+  /api/reactions/{reaction_id}/participants:
+    get:
+      summary: Get all reaction participants for a reaction
+      parameters:
+        - in: path
+          name: reaction_id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: List of reaction participants (array of ReactionParticipant objects).
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ReactionParticipant'
+        '500':
+          description: Internal server error.
+    post:
+      summary: Create a new reaction participant
+      parameters:
+        - in: path
+          name: reaction_id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewReactionParticipant'
+      responses:
+        '201':
+          description: Reaction participant created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        '400':
+          description: Invalid request payload.
+        '500':
+          description: Internal server error.
+  /api/participants/{reaction_id}/{molecule_id}/{role}:
+    put:
+      summary: Update a reaction participant's stoichiometric coefficient
+      parameters:
+        - in: path
+          name: reaction_id
+          required: true
+          schema:
+            type: integer
+        - in: path
+          name: molecule_id
+          required: true
+          schema:
+            type: integer
+        - in: path
+          name: role
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                stoichiometric_coefficient:
+                  type: number
+                  format: decimal
+              required:
+                - stoichiometric_coefficient
+      responses:
+        '200':
+          description: Reaction participant updated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        '400':
+          description: Invalid request payload.
+        '500':
+          description: Internal server error.
+    delete:
+      summary: Delete a reaction participant
+      parameters:
+        - in: path
+          name: reaction_id
+          required: true
+          schema:
+            type: integer
+        - in: path
+          name: molecule_id
+          required: true
+          schema:
+            type: integer
+        - in: path
+          name: role
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Reaction participant deleted successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        '500':
+          description: Internal server error.
 components:
   schemas:
     Molecule:
@@ -403,6 +593,50 @@ components:
           type: string
       required:
         - description
+    Reaction:
+      type: object
+      properties:
+        ReactionID:
+          type: integer
+        ReactionName:
+          type: string
+        ReactionDescription:
+          type: string
+    NewReaction:
+      type: object
+      properties:
+        ReactionName:
+          type: string
+        ReactionDescription:
+          type: string
+      required:
+        - ReactionName
+    ReactionParticipant:
+      type: object
+      properties:
+        ReactionID:
+          type: integer
+        MoleculeID:
+          type: integer
+        Role:
+          type: string
+        StoichiometricCoefficient:
+          type: number
+          format: decimal
+    NewReactionParticipant:
+      type: object
+      properties:
+        molecule_id:
+          type: integer
+        role:
+          type: string
+        stoichiometric_coefficient:
+          type: number
+          format: decimal
+      required:
+        - molecule_id
+        - role
+        - stoichiometric_coefficient
     Message:
       type: object
       properties:
