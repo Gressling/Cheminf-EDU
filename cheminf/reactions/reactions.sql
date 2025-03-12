@@ -89,3 +89,6 @@ GROUP BY r.ReactionID, r.ReactionName, r.ReactionDescription;
 
 --->	ReactionName	    ReactionDescription	                                                                                              ReactionEquation
 --->	Aspirin Synthesis	Synthesis of acetylsalicylic acid (aspirin) from salicylic acid and acetic anhydride with an acid catalyst.	Reactants: 1.000 Salicylic Acid (Oc1ccccc1C(=O)O) + 1.000 Acetic Anhydride (CC(=O)OC(=O)C) | Products: 1.000 Acetylsalicylic Acid (Aspirin) (CC(=O)Oc1ccccc1C(=O)O) + 1.000 Acetic Acid (CC(=O)O) | Catalysts: 0.100 Sulfuric Acid (OS(=O)(=O)O)
+
+Please add the ID's (Pkeys) of the molecules, the reaction and the reactionparticipants in the form [molID: 123], [ReacID: 123], [ReacPartID: 123] before each entity.
+

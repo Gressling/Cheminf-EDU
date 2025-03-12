@@ -513,6 +513,48 @@ paths:
                 $ref: '#/components/schemas/Message'
         '500':
           description: Internal server error.
+  /api/experiments:
+    get:
+      summary: Get all experiments
+      responses:
+        '200':
+          description: List of experiments.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Experiment'
+        '500':
+          description: Internal server error.
+  /api/samples:
+    get:
+      summary: Get all samples
+      responses:
+        '200':
+          description: List of samples.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Sample'
+        '500':
+          description: Internal server error.
+  /api/measurements:
+    get:
+      summary: Get all measurements
+      responses:
+        '200':
+          description: List of measurements.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Measurement'
+        '500':
+          description: Internal server error.
 components:
   schemas:
     Molecule:
@@ -642,3 +684,49 @@ components:
       properties:
         message:
           type: string
+    Experiment:
+      type: object
+      properties:
+        experiment_id:
+          type: integer
+        experiment_name:
+          type: string
+        description:
+          type: string
+        start_date:
+          type: string
+          format: date
+        end_date:
+          type: string
+          format: date
+    Sample:
+      type: object
+      properties:
+        sample_id:
+          type: integer
+        experiment_id:
+          type: integer
+        sample_code:
+          type: string
+        sample_type:
+          type: string
+        collection_date:
+          type: string
+          format: date
+    Measurement:
+      type: object
+      properties:
+        measurement_id:
+          type: integer
+        sample_id:
+          type: integer
+        parameter:
+          type: string
+        value:
+          type: number
+          format: decimal
+        unit:
+          type: string
+        measurement_date:
+          type: string
+          format: date-time

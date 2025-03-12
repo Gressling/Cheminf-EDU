@@ -19,6 +19,12 @@ import cheminf.reactions.ui_reactions # (If you create a UI for reactions)
 import cheminf.reactions.ui_reactionparticipants  # For reaction participants UI
 import cheminf.reactions.ui_overview  # Reaction Overview UI page
 
+# --- NEW: Import LIMS experiments modules ---
+import cheminf.lims_experiments.rest_api      # REST API endpoints for LIMS experiments
+import cheminf.lims_experiments.ui_experiments  # LIMS experiments UI page
+import cheminf.lims_experiments.ui_samples      # LIMS samples UI page
+import cheminf.lims_experiments.ui_measurements # LIMS measurements UI page
+
 # Load environment variables
 load_dotenv()
 server.secret_key = os.getenv('SECRET_KEY')
@@ -124,6 +130,7 @@ def home():
           <li><strong>Reactions Maintenance:</strong> Define, view, and update chemical reaction data and kinetics.</li>
           <li><strong>Reaction Participants Maintenance:</strong> Oversee reaction components including reactants, products, and catalysts with their respective stoichiometric details.</li>
           <li><strong>Reaction Overview:</strong> Generate comprehensive overviews and chemical equations from aggregated reaction data.</li>
+          <li><strong>LIMS Experiments:</strong> Access experiment, sample, and measurement data.</li>
           <li><strong>REST API:</strong> Leverage a suite of RESTful endpoints for easy integration, automation, and data sharing across various applications.</li>
         </ul>
         <p>
@@ -230,16 +237,22 @@ START_PAGE = """
           <li><a href="/inventory/" target="mainFrame">Inventory</a></li>
           <li><a href="/projects/" target="mainFrame">Projects Maintenance</a></li>
           <li><a href="/tasks/" target="mainFrame">Tasks Maintenance</a></li>
-          <li><a href="/reactions/" target="mainFrame">Reactions Maintenance</a></li>
-          <li><a href="/reactions/participants/" target="mainFrame">Reaction Participants Maintenance</a></li>
-          <li><a href="/reactions/overview/" target="mainFrame">Reaction Overview</a></li>
+          <li><a href="/reactions/" target="mainFrame">Reactions Maintenance (old)</a></li>
+          <li><a href="/reactions/participants/" target="mainFrame">Reaction Participants Maintenance (old)</a></li>
+          <li><a href="/reactions/overview/" target="mainFrame">Reaction Overview (old)</a></li>
+        </ul>
+        <h2>LIMS Experiments</h2>
+        <ul>
+          <li><a href="/lims_experiments/experiments/" target="mainFrame">Experiments</a></li>
+          <li><a href="/lims_experiments/samples/" target="mainFrame">Samples</a></li>
+          <li><a href="/lims_experiments/measurements/" target="mainFrame">Measurements</a></li>
         </ul>
         <h2>REST Resources</h2>
         <ul>
           <li><a href="/api/molecules" target="mainFrame">REST API: Molecules Data (JSON)</a></li>
           <li><a href="/api/inventory" target="mainFrame">REST API: Inventory Data (JSON)</a></li>
           <li><a href="/api/projects" target="mainFrame">Projects API (JSON)</a></li>
-          <li><a href="/api/reactions" target="mainFrame">REST API: Reactions Data (JSON)</a></li>
+          <li><a href="/api/reactions" target="mainFrame">REST API: Reactions Data (old) (JSON)</a></li>
           <li><a href="/static/REST_documentation.html" target="mainFrame">REST API Documentation</a></li>
         </ul>
         <!-- Footer navigation with Logout -->

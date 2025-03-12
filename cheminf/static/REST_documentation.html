@@ -334,6 +334,86 @@ Host: localhost:8050</code></pre>
 }</code></pre>
           </div>
         </details>
+        
+        <!-- New LIMS Experiments Endpoints -->
+        <details>
+          <summary>LIMS Experiments Endpoints</summary>
+          <div class="endpoint">
+            <h2>GET /api/experiments</h2>
+            <p><strong>Summary:</strong> Get all experiments</p>
+            <p><strong>Responses:</strong></p>
+            <ul>
+              <li>200: List of experiments (array of Experiment objects)</li>
+              <li>500: Internal server error</li>
+            </ul>
+            <p><strong>Example Request:</strong></p>
+            <pre><code>GET /api/experiments HTTP/1.1
+Host: localhost:8050</code></pre>
+            <p><strong>Example Response (200):</strong></p>
+            <pre><code>[
+  {
+    "experiment_id": 1,
+    "experiment_name": "Experiment Alpha",
+    "description": "Initial experiment.",
+    "start_date": "2025-01-01",
+    "end_date": "2025-02-01"
+  },
+  {
+    "experiment_id": 2,
+    "experiment_name": "Experiment Beta",
+    "description": "Follow-up experiment.",
+    "start_date": "2025-03-01",
+    "end_date": "2025-04-01"
+  }
+]</code></pre>
+          </div>
+          <div class="endpoint">
+            <h2>GET /api/samples</h2>
+            <p><strong>Summary:</strong> Get all samples</p>
+            <p><strong>Responses:</strong></p>
+            <ul>
+              <li>200: List of samples (array of Sample objects)</li>
+              <li>500: Internal server error</li>
+            </ul>
+            <p><strong>Example Request:</strong></p>
+            <pre><code>GET /api/samples HTTP/1.1
+Host: localhost:8050</code></pre>
+            <p><strong>Example Response (200):</strong></p>
+            <pre><code>[
+  {
+    "sample_id": 1,
+    "experiment_id": 1,
+    "sample_code": "SMP001",
+    "sample_type": "Blood",
+    "collection_date": "2025-01-02"
+  }
+]</code></pre>
+          </div>
+          <div class="endpoint">
+            <h2>GET /api/measurements</h2>
+            <p><strong>Summary:</strong> Get all measurements</p>
+            <p><strong>Responses:</strong></p>
+            <ul>
+              <li>200: List of measurements (array of Measurement objects)</li>
+              <li>500: Internal server error</li>
+            </ul>
+            <p><strong>Example Request:</strong></p>
+            <pre><code>GET /api/measurements HTTP/1.1
+Host: localhost:8050</code></pre>
+            <p><strong>Example Response (200):</strong></p>
+            <pre><code>[
+  {
+    "measurement_id": 1,
+    "sample_id": 1,
+    "parameter": "pH",
+    "value": 7.0,
+    "unit": "",
+    "measurement_date": "2025-01-03T14:30:00Z"
+  }
+]</code></pre>
+          </div>
+        </details>
+        
       </div>
     </div>
   </body>

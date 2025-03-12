@@ -38,6 +38,8 @@ Neuer ssh
 
 nslookup prod.paramus.app
 
-git pull origin main
+/api/projects/{project_id}/tasks
 
 pip install -r requirements.txt
+
+Please create analog to ui_projects.py and ui_tasks.py and rest_api.py(projects) all the three matching code files for the 'reactions' folder: ui_reactions, ui_reactionparticipants, rest_api
