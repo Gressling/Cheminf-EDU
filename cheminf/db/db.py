@@ -1,31 +1,64 @@
-from dotenv import load_dotenv
 import os
-import mysql.connector
+import sqlite3
+from pathlib import Path
 
-load_dotenv(override=True)
+# Try to load dotenv, but continue if not available
+try:
+    from dotenv import load_dotenv
+    load_dotenv(override=True)
+except ImportError:
+    pass  # dotenv not available, continue without it
 
-DB_HOST = os.environ.get('DB_HOST')
-DB_USER = os.environ.get('DB_USER')
-DB_PASSWORD = os.environ.get('DB_PASSWORD')
-DB_NAME = os.environ.get('DB_NAME')
-DB_PREFIX = os.environ.get('DB_PREFIX', '')
+# SQLite database configuration
+DB_PATH = Path(__file__).parent.parent.parent / "cheminf_edu.db"
+DB_PREFIX = os.environ.get('DB_PREFIX', 'cheminf3_')
 
 TABLE_NAME = f"{DB_PREFIX}molecules"
 
 def get_db_connection():
-    connection = mysql.connector.connect(
-        host=DB_HOST,
-        user=DB_USER,
-        password=DB_PASSWORD,
-        database=DB_NAME
-    )
+    """Get SQLite database connection with row factory for dictionary-like access."""
+    connection = sqlite3.connect(DB_PATH)
+    connection.row_factory = sqlite3.Row  # This allows dictionary-like access to rows
     return connection
 
 def get_all_rows():
+    """Get all rows from molecules table."""
     connection = get_db_connection()
-    cursor = connection.cursor(dictionary=True)
+    cursor = connection.cursor()
     cursor.execute(f"SELECT * FROM {TABLE_NAME}")
-    rows = cursor.fetchall()
+    rows = [dict(row) for row in cursor.fetchall()]  # Convert Row objects to dictionaries
     cursor.close()
     connection.close()
     return rows
+
+def execute_query(query, params=None):
+    """Execute a query and return results."""
+    connection = get_db_connection()
+    cursor = connection.cursor()
+    try:
+        if params:
+            cursor.execute(query, params)
+        else:
+            cursor.execute(query)
+        
+        if query.strip().upper().startswith('SELECT'):
+            results = [dict(row) for row in cursor.fetchall()]
+            return results
+        else:
+            connection.commit()
+            return cursor.rowcount
+    finally:
+        cursor.close()
+        connection.close()
+
+def execute_many(query, params_list):
+    """Execute a query with multiple parameter sets."""
+    connection = get_db_connection()
+    cursor = connection.cursor()
+    try:
+        cursor.executemany(query, params_list)
+        connection.commit()
+        return cursor.rowcount
+    finally:
+        cursor.close()
+        connection.close()

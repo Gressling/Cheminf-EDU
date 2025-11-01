@@ -9,14 +9,8 @@ REACTIONPARTICIPANTS_TABLE = f"{DB_NAME}.{DB_PREFIX}reactionparticipants"
 
 # Helper function to fetch reaction participants for a given ReactionID.
 def get_reaction_participants(reaction_id):
-    connection = get_db_connection()
-    cursor = connection.cursor(dictionary=True)
-    query = f"SELECT * FROM {REACTIONPARTICIPANTS_TABLE} WHERE ReactionID = %s"
-    cursor.execute(query, (reaction_id,))
-    participants = cursor.fetchall()
-    cursor.close()
-    connection.close()
-    return participants
+    """Temporarily disabled for SQLite migration"""
+    return []  # Placeholder return
 
 external_stylesheets = ['/static/styles.css']
 
@@ -133,11 +127,9 @@ app.layout = html.Div(
     State("participants-table", "selected_rows"),
     State("participants-table", "data")
 )
-def update_participants(load_n, add_n, update_n, delete_n, reaction_id, molecule_id, role, stoich,
-                        selected_rows, current_data):
-    ctx = dash.callback_context
-    if not ctx.triggered:
-        raise exceptions.PreventUpdate
+def update_participants(load_n, add_n, update_n, delete_n, reaction_id, molecule_id, role, stoich, *args, **kwargs):
+    """Temporarily disabled for SQLite migration"""
+    return []  # Placeholder return
 
     reaction_id = int(reaction_id) if reaction_id else 1
     button_id = ctx.triggered[0]['prop_id'].split('.')[0]

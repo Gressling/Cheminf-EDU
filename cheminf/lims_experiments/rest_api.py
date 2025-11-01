@@ -9,30 +9,15 @@ MEASUREMENTS_TABLE = f"{DB_NAME}.cheminf3_measurements"
 
 @server.route("/api/experiments", methods=["GET"])
 def get_experiments():
-    conn = get_db_connection()
-    cursor = conn.cursor(dictionary=True)
-    cursor.execute(f"SELECT * FROM {EXPERIMENTS_TABLE}")
-    experiments = cursor.fetchall()
-    cursor.close()
-    conn.close()
-    return jsonify(experiments), 200
+    """Temporarily disabled for SQLite migration"""
+    return []  # Placeholder return
 
 @server.route("/api/samples", methods=["GET"])
 def get_samples():
-    conn = get_db_connection()
-    cursor = conn.cursor(dictionary=True)
-    cursor.execute(f"SELECT * FROM {SAMPLES_TABLE}")
-    samples = cursor.fetchall()
-    cursor.close()
-    conn.close()
-    return jsonify(samples), 200
+    """Temporarily disabled for SQLite migration"""
+    return []  # Placeholder return
 
 @server.route("/api/measurements", methods=["GET"])
 def get_measurements():
-    conn = get_db_connection()
-    cursor = conn.cursor(dictionary=True)
-    cursor.execute(f"SELECT * FROM {MEASUREMENTS_TABLE}")
-    measurements = cursor.fetchall()
-    cursor.close()
-    conn.close()
-    return jsonify(measurements), 200
+    """Temporarily disabled for SQLite migration"""
+    return []  # Placeholder return

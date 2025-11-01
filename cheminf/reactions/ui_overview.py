@@ -28,44 +28,8 @@ app.layout = html.Div([
     Input("load-overview-btn", "n_clicks")
 )
 def load_overview(n_clicks):
-    if not n_clicks:
-        raise exceptions.PreventUpdate
-    # Execute the overview query for ReactionID=1
-    conn = get_db_connection()
-    cursor = conn.cursor(dictionary=True)
-    query = f"""
-    SELECT 
-      r.ReactionName,
-      r.ReactionDescription,
-      CONCAT(
-        'Reactants: ', GROUP_CONCAT(CASE WHEN rp.Role = 'reactant' 
-                                          THEN CONCAT(rp.StoichiometricCoefficient, ' ', m.MoleculeUpacName, ' (', m.SMILES, ')')
-                                          END SEPARATOR ' + '),
-        ' | Products: ', GROUP_CONCAT(CASE WHEN rp.Role = 'product' 
-                                          THEN CONCAT(rp.StoichiometricCoefficient, ' ', m.MoleculeUpacName, ' (', m.SMILES, ')')
-                                          END SEPARATOR ' + '),
-        ' | Catalysts: ', GROUP_CONCAT(CASE WHEN rp.Role = 'catalyst' 
-                                          THEN CONCAT(rp.StoichiometricCoefficient, ' ', m.MoleculeUpacName, ' (', m.SMILES, ')')
-                                          END SEPARATOR ', ')
-      ) AS ReactionEquation
-    FROM {DB_NAME}.{DB_PREFIX}reactions r
-    JOIN {DB_NAME}.{DB_PREFIX}reactionparticipants rp ON r.ReactionID = rp.ReactionID
-    JOIN {DB_NAME}.{DB_PREFIX}molecules m ON rp.MoleculeID = m.id
-    WHERE r.ReactionID = %s
-    GROUP BY r.ReactionID, r.ReactionName, r.ReactionDescription;
-    """
-    cursor.execute(query, (1,))
-    result = cursor.fetchone()
-    cursor.close()
-    conn.close()
-    if result:
-        return html.Div([
-            html.H3(result["ReactionName"]),
-            html.P(result["ReactionDescription"]),
-            html.P(result["ReactionEquation"], style={"fontWeight": "bold"})
-        ])
-    else:
-        return html.P("No reaction data found.")
+    """Temporarily disabled for SQLite migration"""
+    return []  # Placeholder return
 
 if __name__ == '__main__':
     app.run_server(debug=True)

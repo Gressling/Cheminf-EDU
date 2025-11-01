@@ -22,17 +22,8 @@ app.layout = html.Div([
     Input("loading-samples", "children")
 )
 def load_samples(_):
-    conn = get_db_connection()
-    cursor = conn.cursor(dictionary=True)
-    query = f"SELECT * FROM {DB_NAME}.cheminf3_samples"
-    cursor.execute(query)
-    samples = cursor.fetchall()
-    cursor.close()
-    conn.close()
-    if samples:
-        return [html.Div(f"ID: {s['sample_id']} — Code: {s['sample_code']}") for s in samples]
-    else:
-        return "No samples found."
+    """Temporarily disabled for SQLite migration"""
+    return []  # Placeholder return
 
 if __name__ == '__main__':
     app.run_server(debug=True)

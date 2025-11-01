@@ -22,17 +22,8 @@ app.layout = html.Div([
     Input("loading-experiments", "children")
 )
 def load_experiments(_):
-    conn = get_db_connection()
-    cursor = conn.cursor(dictionary=True)
-    query = f"SELECT * FROM {DB_NAME}.cheminf3_experiments"
-    cursor.execute(query)
-    experiments = cursor.fetchall()
-    cursor.close()
-    conn.close()
-    if experiments:
-        return [html.Div(f"ID: {e['experiment_id']} — Name: {e['experiment_name']}") for e in experiments]
-    else:
-        return "No experiments found."
+    """Temporarily disabled for SQLite migration"""
+    return []  # Placeholder return
 
 if __name__ == '__main__':
     app.run_server(debug=True)

@@ -1,0 +1,20 @@
+{
+    "admin": {
+        "username": "admin",
+        "password": "admin123"
+    },
+    "database": {
+        "prefix": "cheminf3_",
+        "path": "cheminf_edu.db"
+    },
+    "server": {
+        "host": "localhost",
+        "port": 8050,
+        "debug": true
+    },
+    "application": {
+        "name": "ChemINF-EDU",
+        "version": "2.0",
+        "instance_name": "Local Development"
+    }
+}

@@ -1,46 +1,41 @@
-import os
-from dotenv import load_dotenv
 import dash
 from dash import dcc, html, Input, Output, State, dash_table, exceptions
-import mysql.connector
 from flask import Flask, request, jsonify
 
-# Load environment variables from the .env file.
-load_dotenv()
-
-# Retrieve database configuration from environment variables.
-DB_HOST = os.environ.get('DB_HOST')
-DB_USER = os.environ.get('DB_USER')
-DB_PASSWORD = os.environ.get('DB_PASSWORD')
-DB_NAME = os.environ.get('DB_NAME')
-DB_PREFIX = os.environ.get('DB_PREFIX', '')
+# Import database functions from our SQLite module
+from ..db.db import get_db_connection, execute_query
 
 # Define the table name using the prefix.
-TABLE_NAME = f"{DB_PREFIX}molecules"
+TABLE_NAME = "cheminf3_molecules"
 
 # -------------------------------
 # Database functions
 # -------------------------------
 
-def get_db_connection():
-    """Establish a connection to the MySQL database using environment variables."""
-    connection = mysql.connector.connect(
-        host=DB_HOST,
-        user=DB_USER,
-        password=DB_PASSWORD,
-        database=DB_NAME
-    )
-    return connection
-
 def get_all_rows():
-    """Retrieve all rows from the prefixed molecules table."""
-    connection = get_db_connection()
-    cursor = connection.cursor(dictionary=True)
-    cursor.execute(f"SELECT * FROM {TABLE_NAME}")
-    rows = cursor.fetchall()
-    cursor.close()
-    connection.close()
-    return rows
+    """Retrieve all rows from the molecules table."""
+    return execute_query(f"SELECT * FROM {TABLE_NAME}")
+
+def insert_molecule(molecule_name):
+    """Insert a new molecule."""
+    return execute_query(
+        f"INSERT INTO {TABLE_NAME} (MoleculeUpacName) VALUES (?)", 
+        (molecule_name,)
+    )
+
+def update_molecule(molecule_id, molecule_name):
+    """Update an existing molecule."""
+    return execute_query(
+        f"UPDATE {TABLE_NAME} SET MoleculeUpacName = ? WHERE id = ?", 
+        (molecule_name, molecule_id)
+    )
+
+def delete_molecule(molecule_id):
+    """Delete a molecule by ID."""
+    return execute_query(
+        f"DELETE FROM {TABLE_NAME} WHERE id = ?", 
+        (molecule_id,)
+    )
 
 # -------------------------------
 # Create Flask server and Dash app
@@ -119,12 +114,7 @@ def manage_molecule(insert_clicks, delete_clicks, update_clicks, input_name, sel
             insert_msg = "Please provide a molecule name."
         else:
             try:
-                connection = get_db_connection()
-                cursor = connection.cursor()
-                cursor.execute(f"INSERT INTO {TABLE_NAME} (MoleculeUpacName) VALUES (%s)", (input_name,))
-                connection.commit()
-                cursor.close()
-                connection.close()
+                insert_molecule(input_name)
                 insert_msg = f"Inserted: {input_name}"
             except Exception as e:
                 insert_msg = f"Error inserting: {str(e)}"
@@ -138,12 +128,7 @@ def manage_molecule(insert_clicks, delete_clicks, update_clicks, input_name, sel
                 selected_row = current_data[row_index]
                 id_to_delete = selected_row['id']
                 
-                connection = get_db_connection()
-                cursor = connection.cursor()
-                cursor.execute(f"DELETE FROM {TABLE_NAME} WHERE id = %s", (id_to_delete,))
-                connection.commit()
-                cursor.close()
-                connection.close()
+                delete_molecule(id_to_delete)
                 update_delete_msg = f"Deleted row with ID: {id_to_delete}"
             except Exception as e:
                 update_delete_msg = f"Error deleting: {str(e)}"
@@ -158,12 +143,7 @@ def manage_molecule(insert_clicks, delete_clicks, update_clicks, input_name, sel
                 selected_row = current_data[row_index]
                 id_to_update = selected_row['id']
                 
-                connection = get_db_connection()
-                cursor = connection.cursor()
-                cursor.execute(f"UPDATE {TABLE_NAME} SET MoleculeUpacName = %s WHERE id = %s", (update_name, id_to_update))
-                connection.commit()
-                cursor.close()
-                connection.close()
+                update_molecule(id_to_update, update_name)
                 update_delete_msg = f"Updated row with ID: {id_to_update} to {update_name}"
             except Exception as e:
                 update_delete_msg = f"Error updating: {str(e)}"
@@ -191,12 +171,7 @@ def api_create_molecule():
         return jsonify({"error": "Invalid request payload"}), 400
     molecule_name = data['MoleculeUpacName']
     try:
-        connection = get_db_connection()
-        cursor = connection.cursor()
-        cursor.execute(f"INSERT INTO {TABLE_NAME} (MoleculeUpacName) VALUES (%s)", (molecule_name,))
-        connection.commit()
-        cursor.close()
-        connection.close()
+        insert_molecule(molecule_name)
         return jsonify({"message": "Molecule created"}), 201
     except Exception as e:
         return jsonify({"error": str(e)}), 500
@@ -208,12 +183,7 @@ def api_update_molecule(id):
         return jsonify({"error": "Invalid request payload"}), 400
     molecule_name = data['MoleculeUpacName']
     try:
-        connection = get_db_connection()
-        cursor = connection.cursor()
-        cursor.execute(f"UPDATE {TABLE_NAME} SET MoleculeUpacName = %s WHERE id = %s", (molecule_name, id))
-        connection.commit()
-        cursor.close()
-        connection.close()
+        update_molecule(id, molecule_name)
         return jsonify({"message": "Molecule updated"}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
@@ -221,12 +191,7 @@ def api_update_molecule(id):
 @server.route('/api/molecules/<int:id>', methods=['DELETE'])
 def api_delete_molecule(id):
     try:
-        connection = get_db_connection()
-        cursor = connection.cursor()
-        cursor.execute(f"DELETE FROM {TABLE_NAME} WHERE id = %s", (id,))
-        connection.commit()
-        cursor.close()
-        connection.close()
+        delete_molecule(id)
         return jsonify({"message": "Molecule deleted"}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
@@ -236,4 +201,4 @@ def api_delete_molecule(id):
 # -------------------------------
 
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    app.run(debug=True)

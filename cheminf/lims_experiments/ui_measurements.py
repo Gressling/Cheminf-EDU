@@ -22,17 +22,8 @@ app.layout = html.Div([
     Input("loading-measurements", "children")
 )
 def load_measurements(_):
-    conn = get_db_connection()
-    cursor = conn.cursor(dictionary=True)
-    query = f"SELECT * FROM {DB_NAME}.cheminf3_measurements"
-    cursor.execute(query)
-    measurements = cursor.fetchall()
-    cursor.close()
-    conn.close()
-    if measurements:
-        return [html.Div(f"ID: {m['measurement_id']} — {m['parameter']}: {m['value']} {m.get('unit','')}") for m in measurements]
-    else:
-        return "No measurements found."
+    """Temporarily disabled for SQLite migration"""
+    return []  # Placeholder return
 
 if __name__ == '__main__':
     app.run_server(debug=True)

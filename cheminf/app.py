@@ -5,7 +5,6 @@ from cheminf.molecules.rest_api import server as api_server
 from cheminf.molecules.ui import app as dash_app
 from cheminf.app_server import server
 import os
-from dotenv import load_dotenv
 # Import dash apps so that they register with the shared server.
 import cheminf.molecules.ui         # molecules dash app
 import cheminf.inventory.ui         # inventory dash app
@@ -25,10 +24,10 @@ import cheminf.lims_experiments.ui_experiments  # LIMS experiments UI page
 import cheminf.lims_experiments.ui_samples      # LIMS samples UI page
 import cheminf.lims_experiments.ui_measurements # LIMS measurements UI page
 
-# Load environment variables
-load_dotenv()
-server.secret_key = os.getenv('SECRET_KEY')
-instance_name = os.getenv('INSTANCE')
+# Load configuration from settings.json
+from cheminf.config import INSTANCE_NAME
+server.secret_key = 'dev_secret_key_change_in_production'  # Should be in settings.json for production
+instance_name = INSTANCE_NAME
 
 # --- Basic Login/Logout Implementation for UI only ---
 
@@ -50,8 +49,8 @@ def login():
     if request.method == 'POST':
         username = request.form.get('username')
         password = request.form.get('password')
-        load_dotenv()
-        if username == os.getenv('ADMIN_USERNAME') and password == os.getenv('ADMIN_PASSWORD'):
+        from cheminf.config import ADMIN_USERNAME, ADMIN_PASSWORD
+        if username == ADMIN_USERNAME and password == ADMIN_PASSWORD:
             session['authenticated'] = True
             return redirect(url_for('index'))
         else:

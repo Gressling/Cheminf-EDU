@@ -1,11 +1,11 @@
 from dash import dcc, html, Input, Output, State, exceptions, dash_table
 import dash
 from cheminf.app_server import server
-from cheminf.db.db import get_db_connection
-from cheminf.config import DB_NAME, DB_PREFIX
+from cheminf.db.db import execute_query
+from cheminf.config import DB_PREFIX
 
 # Build table name for inventory data
-INVENTORY_TABLE = f"{DB_NAME}.{DB_PREFIX}inventory"
+INVENTORY_TABLE = f"{DB_PREFIX}inventory"
 
 external_stylesheets = ['/static/styles.css']
 
@@ -17,13 +17,7 @@ app = dash.Dash(__name__,
 
 # Helper function to fetch all inventory rows
 def get_all_inventory():
-    connection = get_db_connection()
-    cursor = connection.cursor(dictionary=True)
-    cursor.execute(f"SELECT * FROM {INVENTORY_TABLE}")
-    rows = cursor.fetchall()
-    cursor.close()
-    connection.close()
-    return rows
+    return execute_query(f"SELECT * FROM {INVENTORY_TABLE}")
 
 app.layout = html.Div(
     className="container",
@@ -161,15 +155,10 @@ def manage_inventory(insert_clicks, delete_clicks, update_clicks,
             insert_msg = "Please provide molecule name, amount, and unit."
         else:
             try:
-                connection = get_db_connection()
-                cursor = connection.cursor()
-                cursor.execute(
-                    f"INSERT INTO {INVENTORY_TABLE} (MoleculeUpacName, amount, unit) VALUES (%s, %s, %s)",
+                execute_query(
+                    f"INSERT INTO {INVENTORY_TABLE} (MoleculeUpacName, amount, unit) VALUES (?, ?, ?)",
                     (input_name, input_amount, input_unit)
                 )
-                connection.commit()
-                cursor.close()
-                connection.close()
                 insert_msg = f"Inserted: {input_name} with amount {input_amount} {input_unit}"
             except Exception as e:
                 insert_msg = f"Error inserting: {str(e)}"
@@ -181,12 +170,7 @@ def manage_inventory(insert_clicks, delete_clicks, update_clicks,
                 row_index = selected_rows[0]
                 selected_row = current_data[row_index]
                 id_to_delete = selected_row['id']
-                connection = get_db_connection()
-                cursor = connection.cursor()
-                cursor.execute(f"DELETE FROM {INVENTORY_TABLE} WHERE id = %s", (id_to_delete,))
-                connection.commit()
-                cursor.close()
-                connection.close()
+                execute_query(f"DELETE FROM {INVENTORY_TABLE} WHERE id = ?", (id_to_delete,))
                 update_delete_msg = f"Deleted row with ID: {id_to_delete}"
             except Exception as e:
                 update_delete_msg = f"Error deleting: {str(e)}"
@@ -200,15 +184,10 @@ def manage_inventory(insert_clicks, delete_clicks, update_clicks,
                 row_index = selected_rows[0]
                 selected_row = current_data[row_index]
                 id_to_update = selected_row['id']
-                connection = get_db_connection()
-                cursor = connection.cursor()
-                cursor.execute(
-                    f"UPDATE {INVENTORY_TABLE} SET MoleculeUpacName = %s, amount = %s, unit = %s WHERE id = %s",
+                execute_query(
+                    f"UPDATE {INVENTORY_TABLE} SET MoleculeUpacName = ?, amount = ?, unit = ? WHERE id = ?",
                     (update_name, update_amount, update_unit, id_to_update)
                 )
-                connection.commit()
-                cursor.close()
-                connection.close()
                 update_delete_msg = f"Updated row ID {id_to_update} to {update_name} with amount {update_amount} {update_unit}"
             except Exception as e:
                 update_delete_msg = f"Error updating: {str(e)}"
@@ -225,13 +204,9 @@ def check_inventory(n_clicks, molecule_name):
     if not n_clicks or not molecule_name:
         raise exceptions.PreventUpdate
     try:
-        connection = get_db_connection()
-        cursor = connection.cursor(dictionary=True)
-        cursor.execute(f"SELECT amount, unit FROM {INVENTORY_TABLE} WHERE MoleculeUpacName = %s", (molecule_name,))
-        row = cursor.fetchone()
-        cursor.close()
-        connection.close()
-        if row:
+        rows = execute_query(f"SELECT amount, unit FROM {INVENTORY_TABLE} WHERE MoleculeUpacName = ?", (molecule_name,))
+        if rows:
+            row = rows[0]
             return f"Available stock for {molecule_name}: {row['amount']} {row['unit']}"
         else:
             return "Molecule not found in inventory."

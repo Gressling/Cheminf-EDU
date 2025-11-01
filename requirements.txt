@@ -1,6 +1,5 @@
 dash
 flask
-mysql-connector-python
 pandas
 python-dotenv
 rdkit
