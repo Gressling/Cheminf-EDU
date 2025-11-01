@@ -6,7 +6,9 @@
     --accent-color: #1e88e5;
     --card-bg: #1f1f1f;
     --border-color: #2c2c2c;
-    --hover-bg: #333;
+    --hover-bg: #333333;
+    --header-bg: #333333;
+    --header-text: #ffffff;
 }
 
 /* Global styles */
@@ -75,6 +77,150 @@ nav .nav-section h2 {
     border-radius: 8px;
     padding: 20px;
     margin: 20px 0;
+}
+
+/* Header styling */
+.header {
+    background-color: var(--header-bg) !important;
+    color: var(--header-text) !important;
+    border-bottom: 2px solid var(--border-color);
+}
+
+.header h1 {
+    color: var(--header-text) !important;
+}
+
+/* Button styling */
+.button {
+    background-color: var(--header-bg);
+    color: var(--header-text);
+    border: 2px solid var(--border-color);
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    margin: 5px;
+    transition: all 0.3s ease;
+}
+
+.button:hover {
+    background-color: var(--hover-bg);
+    color: var(--text-color);
+}
+
+.button.delete {
+    background-color: var(--header-bg);
+    color: var(--header-text);
+    border-color: #666;
+}
+
+.button.delete:hover {
+    background-color: #f0f0f0;
+    color: #000;
+}
+
+/* Input styling */
+input, textarea, select {
+    background-color: var(--card-bg);
+    color: var(--text-color);
+    border: 2px solid var(--border-color);
+    padding: 8px;
+    border-radius: 4px;
+}
+
+input:focus, textarea:focus, select:focus {
+    outline: none;
+    border-color: #666;
+}
+
+/* Table styling for DataTables */
+.dash-table-container .dash-spreadsheet-container .dash-spreadsheet-inner table {
+    background-color: var(--card-bg) !important;
+}
+
+.dash-table-container .dash-spreadsheet-container .dash-spreadsheet-inner th {
+    background-color: var(--header-bg) !important;
+    color: var(--header-text) !important;
+    border: 1px solid var(--border-color) !important;
+}
+
+.dash-table-container .dash-spreadsheet-container .dash-spreadsheet-inner td {
+    background-color: var(--card-bg) !important;
+    color: var(--text-color) !important;
+    border: 1px solid var(--border-color) !important;
+}
+
+/* Navigation links */
+.nav-link {
+    color: var(--text-color);
+    text-decoration: none;
+    padding: 8px 16px;
+    border: 2px solid var(--border-color);
+    background-color: var(--card-bg);
+    border-radius: 4px;
+    display: inline-block;
+    margin: 5px;
+    transition: all 0.3s ease;
+}
+
+.nav-link:hover {
+    background-color: var(--hover-bg);
+    text-decoration: none;
+}
+
+/* Section styling */
+.input-section, .table-section {
+    background-color: var(--card-bg);
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    padding: 20px;
+    margin: 20px 0;
+}
+
+.input-section h2, .table-section h2 {
+    color: var(--text-color);
+    border-bottom: 2px solid var(--border-color);
+    padding-bottom: 10px;
+}
+
+/* Status message styling */
+.status-message {
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 4px;
+    background-color: var(--card-bg);
+    border: 2px solid var(--border-color);
+    color: var(--text-color);
+}
+
+/* Navigation section */
+.navigation {
+    text-align: center;
+    margin: 20px 0;
+    padding: 20px;
+    border-top: 2px solid var(--border-color);
+}
+
+/* Dropdown styling */
+.Select-control {
+    background-color: var(--card-bg) !important;
+    border: 2px solid var(--border-color) !important;
+    color: var(--text-color) !important;
+}
+
+.Select-menu-outer {
+    background-color: var(--card-bg) !important;
+    border: 2px solid var(--border-color) !important;
+}
+
+.Select-option {
+    background-color: var(--card-bg) !important;
+    color: var(--text-color) !important;
+}
+
+.Select-option.is-focused {
+    background-color: var(--hover-bg) !important;
 }
 
 /* Responsive layout adjustments for mobile screens */

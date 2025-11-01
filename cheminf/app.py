@@ -169,6 +169,13 @@ START_PAGE = """
         text-decoration: none;
         float: right;
         margin-top: 5px;
+        padding: 5px 10px;
+        border: 2px solid white;
+        border-radius: 4px;
+        transition: all 0.3s ease;
+      }
+      .header a:hover {
+        color: #00aced;
       }
       .container {
         width: 130%; /* 30% wider overall */
@@ -198,6 +205,8 @@ START_PAGE = """
       .nav li a {
         text-decoration: none;
         color: #fff;
+        display: block;
+        padding: 6px 8px;
       }
       .nav li a:hover {
         color: #00aced;
@@ -242,9 +251,9 @@ START_PAGE = """
         </ul>
         <h2>LIMS Experiments</h2>
         <ul>
-          <li><a href="/lims_experiments/experiments/" target="mainFrame">Experiments</a></li>
-          <li><a href="/lims_experiments/samples/" target="mainFrame">Samples</a></li>
-          <li><a href="/lims_experiments/measurements/" target="mainFrame">Measurements</a></li>
+          <li><a href="/experiments/" target="mainFrame">Experiments</a></li>
+          <li><a href="/samples/" target="mainFrame">Samples</a></li>
+          <li><a href="/measurements/" target="mainFrame">Measurements</a></li>
         </ul>
         <h2>REST Resources</h2>
         <ul>
