@@ -1,9 +1,30 @@
 import json
 import os
+import sys
 from pathlib import Path
 
+def get_base_path():
+    """Get the base path for the application, works with PyInstaller"""
+    if hasattr(sys, '_MEIPASS'):
+        # Running as PyInstaller bundle
+        return Path(sys._MEIPASS)
+    else:
+        # Running in development
+        return Path(__file__).parent.parent
+
+def get_data_path():
+    """Get the data path where database and settings should be stored"""
+    if hasattr(sys, '_MEIPASS'):
+        # Running as PyInstaller bundle - use executable directory
+        return Path(sys.executable).parent
+    else:
+        # Running in development - use project root
+        return Path(__file__).parent.parent
+
 # Load settings from JSON file
-SETTINGS_FILE = Path(__file__).parent.parent / "settings.json"
+BASE_PATH = get_base_path()
+DATA_PATH = get_data_path()
+SETTINGS_FILE = BASE_PATH / "settings.json"
 
 def load_settings():
     """Load settings from settings.json file"""
@@ -32,7 +53,12 @@ def load_settings():
 SETTINGS = load_settings()
 
 # SQLite configuration
-DB_PATH = Path(__file__).parent.parent / SETTINGS["database"]["path"]
+# Use environment variable if set (for PyInstaller), otherwise use settings
+if os.environ.get('CHEMINF_DB_PATH'):
+    DB_PATH = Path(os.environ.get('CHEMINF_DB_PATH'))
+else:
+    DB_PATH = DATA_PATH / SETTINGS["database"]["path"]
+    
 DB_PREFIX = SETTINGS["database"]["prefix"]
 
 # Admin credentials

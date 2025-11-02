@@ -242,20 +242,20 @@ START_PAGE = """
         <!-- Top navigation link for Home -->
         <ul>
           <li><a href="/home" target="mainFrame">Home</a></li>
-        </ul>
-        <h2>Programs</h2>
-        <ul>
-          <li><a href="/molecules/" target="mainFrame">Molecules</a></li>
-          <li><a href="/inventory/" target="mainFrame">Inventory</a></li>
           <li><a href="/projects/" target="mainFrame">Projects Maintenance</a></li>
           <li><a href="/tasks/" target="mainFrame">Tasks Maintenance</a></li>
+        </ul>
+        <h2>ELN</h2>
+        <ul>
+          <li><a href="/experiments/" target="mainFrame">Experiments</a></li>
+          <li><a href="/molecules/" target="mainFrame">Molecules</a></li>
+          <li><a href="/inventory/" target="mainFrame">Inventory</a></li>
           <li><a href="/reactions/" target="mainFrame">Reactions Maintenance (old)</a></li>
           <li><a href="/reactions/participants/" target="mainFrame">Reaction Participants Maintenance (old)</a></li>
           <li><a href="/reactions/overview/" target="mainFrame">Reaction Overview (old)</a></li>
         </ul>
-        <h2>LIMS Experiments</h2>
+        <h2>LIMS</h2>
         <ul>
-          <li><a href="/experiments/" target="mainFrame">Experiments</a></li>
           <li><a href="/samples/" target="mainFrame">Samples</a></li>
           <li><a href="/measurements/" target="mainFrame">Measurements</a></li>
         </ul>
@@ -269,7 +269,7 @@ START_PAGE = """
           <li><a href="/api/inventory" target="mainFrame">REST API: Inventory Data (JSON)</a></li>
           <li><a href="/api/projects" target="mainFrame">Projects API (JSON)</a></li>
           <li><a href="/api/reactions" target="mainFrame">REST API: Reactions Data (old) (JSON)</a></li>
-          <li><a href="/api/timeseries/experiments" target="mainFrame">REST API: Time Series Experiments (JSON)</a></li>
+          <li><a href="/api/v1/timeseries/experiments" target="mainFrame">REST API: Time Series Experiments (JSON)</a></li>
           <li><a href="/static/REST_documentation.html" target="mainFrame">REST API Documentation</a></li>
         </ul>
         <!-- Footer navigation with Logout -->

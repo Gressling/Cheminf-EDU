@@ -30,7 +30,30 @@ MANIFEST
 #  Usually these files are written by a python script from a template
 #  before PyInstaller builds the exe, so as to inject date/other infos into it.
 *.manifest
-*.spec
+# *.spec  # We want to keep our custom spec file
+
+# PyInstaller build artifacts
+build/
+dist/
+
+# Distribution directory - executable and dependencies (generated)
+distribution/ChemINF-EDU.exe
+distribution/_internal/
+
+# Legacy executable files (if any)
+ChemINF-EDU.exe
+Start_ChemINF-EDU.bat
+README_Executable.md
+
+# Build logs
+*.log
+
+# ChemINF-EDU specific
+# Database files (optional - might want to include sample data)
+# cheminf_edu.db
+
+# Test files
+test_exe.bat
 
 # Installer logs
 pip-log.txt

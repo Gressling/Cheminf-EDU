@@ -4,7 +4,17 @@ ChemINF-EDU is a educational cheminformatics system designed to support a wide r
 
 ## 🚀 Quick Start
 
-**Start the application in 3 easy steps:**
+### Option 1: Standalone Executable (Recommended)
+
+**Ready-to-run executable - No Python installation required!**
+
+1. **Download** or build the executable (see [Building](#-building-standalone-executable) section)
+2. **Run** the launcher: `launch.bat`
+3. **Open** your browser to: **http://localhost:8050**
+
+### Option 2: Python Development Setup
+
+**For developers or customization:**
 
 1. **Setup** (first time only):
    ```bash
@@ -67,6 +77,26 @@ python scripts/run.py --init-db      # Initialize database
 python scripts/run.py --help
 ```
 
+## 🏗️ Building Standalone Executable
+
+**Create a standalone Windows executable:**
+
+```bash
+# Build the executable
+distribution\build_tools\build.bat
+
+# Run the built executable
+launch.bat
+```
+
+**Distribution Structure:**
+```
+distribution/
+├── ChemINF-EDU.exe          # Self-contained executable (~200-300MB)
+├── build_tools/             # Build scripts and configuration
+└── docs/                    # Build documentation
+```
+
 ## 📁 Project Structure
 
 ```
@@ -78,10 +108,14 @@ cheminf-edu/
 │   ├── inventory/           # Chemical inventory
 │   ├── lims_experiments/    # Laboratory experiments
 │   └── projects/            # Project management
-├── scripts/                 # Launcher scripts
+├── distribution/            # Standalone executable distribution
+│   ├── build_tools/        # PyInstaller build configuration
+│   └── docs/               # Build documentation
+├── scripts/                 # Development launcher scripts
 │   ├── run.py              # Main launcher (Python)
 │   ├── run.ps1             # PowerShell launcher
 │   └── run.bat             # Windows batch launcher
+├── launch.bat              # Executable launcher
 ├── cheminf_edu.db          # SQLite database (auto-created)
 └── requirements.txt        # Python dependencies
 ```

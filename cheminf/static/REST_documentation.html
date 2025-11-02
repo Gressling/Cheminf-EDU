@@ -335,6 +335,215 @@ Host: localhost:8050</code></pre>
           </div>
         </details>
         
+        <!-- Time Series Analysis Endpoints -->
+        <details>
+          <summary>Time Series Analysis Endpoints (v1)</summary>
+          <div class="endpoint">
+            <h2>GET /api/v1/timeseries/experiments</h2>
+            <p><strong>Summary:</strong> Get all time series experiments with rich query options</p>
+            <p><strong>Query Parameters:</strong></p>
+            <ul>
+              <li><code>format</code> (string): Response format - json (default), csv, xml</li>
+              <li><code>include_metadata</code> (boolean): Include experiment metadata - default false</li>
+              <li><code>limit</code> (integer): Max experiments to return (1-1000) - default 100</li>
+              <li><code>offset</code> (integer): Number to skip for pagination - default 0</li>
+            </ul>
+            <p><strong>Responses:</strong></p>
+            <ul>
+              <li>200: List of time series experiments with standardized format</li>
+              <li>400: Bad request - invalid parameters</li>
+              <li>500: Internal server error</li>
+            </ul>
+            <p><strong>Example Request:</strong></p>
+            <pre><code>GET /api/v1/timeseries/experiments?limit=2&include_metadata=true&format=json HTTP/1.1
+Host: localhost:8050</code></pre>
+            <p><strong>Example Response (200):</strong></p>
+            <pre><code>{
+  "success": true,
+  "timestamp": "2025-11-02T10:00:00Z",
+  "data": [
+    {
+      "experiment_id": 5,
+      "series_name": "Aspirin_Synthesis_001",
+      "description": "Aspirin synthesis time series data",
+      "parameter_count": 4,
+      "data_points_count": 100
+    }
+  ],
+  "message": null,
+  "total_count": 1,
+  "has_more": false,
+  "pagination": {
+    "current_page": 1,
+    "per_page": 2,
+    "total_items": 1,
+    "total_pages": 1,
+    "has_next": false,
+    "has_previous": false
+  }
+}</code></pre>
+          </div>
+          <div class="endpoint">
+            <h2>GET /api/v1/timeseries/experiments/{id}/data</h2>
+            <p><strong>Summary:</strong> Get time series data for an experiment with advanced filtering</p>
+            <p><strong>Path Parameter:</strong> id (integer) - Experiment ID</p>
+            <p><strong>Query Parameters:</strong></p>
+            <ul>
+              <li><code>format</code> (string): json (default), csv, xml, plotly_json</li>
+              <li><code>series_name</code> (string): Filter by specific series name</li>
+              <li><code>parameter_name</code> (string): Filter by specific parameter</li>
+              <li><code>time_range_start</code> (ISO 8601): Start of time range filter</li>
+              <li><code>time_range_end</code> (ISO 8601): End of time range filter</li>
+              <li><code>sampling</code> (string): every_nth or time_interval</li>
+              <li><code>sampling_value</code> (integer): nth point or interval in seconds</li>
+              <li><code>aggregation</code> (string): avg, min, max, sum, count</li>
+              <li><code>limit</code> (integer): Max data points per parameter (1-50000) - default 10000</li>
+            </ul>
+            <p><strong>Responses:</strong></p>
+            <ul>
+              <li>200: Time series data in requested format</li>
+              <li>404: Experiment not found</li>
+              <li>500: Internal server error</li>
+            </ul>
+            <p><strong>Example Request:</strong></p>
+            <pre><code>GET /api/v1/timeseries/experiments/5/data?parameter_name=temperature&limit=50 HTTP/1.1
+Host: localhost:8050</code></pre>
+            <p><strong>Example Response (200):</strong></p>
+            <pre><code>{
+  "success": true,
+  "timestamp": "2025-11-02T10:00:00Z",
+  "data": [
+    {
+      "experiment_id": 5,
+      "series_name": "Aspirin_Synthesis_001",
+      "parameter_name": "temperature",
+      "time_step": 1,
+      "timestamp": "2025-01-01T10:00:00Z",
+      "value": 25.0,
+      "unit": "°C",
+      "notes": null
+    }
+  ],
+  "total_count": 100,
+  "has_more": true
+}</code></pre>
+          </div>
+          <div class="endpoint">
+            <h2>POST /api/v1/timeseries/experiments/{id}/data</h2>
+            <p><strong>Summary:</strong> Add time series data to an experiment (bulk insert)</p>
+            <p><strong>Path Parameter:</strong> id (integer) - Experiment ID</p>
+            <p><strong>Request Body:</strong> Bulk time series data (max 10,000 points per request)</p>
+            <p><strong>Responses:</strong></p>
+            <ul>
+              <li>201: Data successfully added</li>
+              <li>400: Bad request - invalid data format</li>
+              <li>404: Experiment not found</li>
+              <li>500: Internal server error</li>
+            </ul>
+            <p><strong>Example Request:</strong></p>
+            <pre><code>POST /api/v1/timeseries/experiments/5/data HTTP/1.1
+Content-Type: application/json
+
+{
+  "data_points": [
+    {
+      "series_name": "Aspirin_Synthesis_001",
+      "parameter_name": "temperature",
+      "time_step": 101,
+      "timestamp": "2025-01-01T12:00:00Z",
+      "value": 35.0,
+      "unit": "°C",
+      "notes": "New measurement"
+    }
+  ],
+  "metadata": {
+    "batch_id": "BATCH_001",
+    "source": "Automated_Logger",
+    "notes": "Hourly temperature readings"
+  }
+}</code></pre>
+            <p><strong>Example Response (201):</strong></p>
+            <pre><code>{
+  "success": true,
+  "timestamp": "2025-11-02T10:00:00Z",
+  "data": {
+    "inserted_count": 1,
+    "batch_id": "BATCH_001"
+  },
+  "message": "Successfully inserted 1 data points"
+}</code></pre>
+          </div>
+          <div class="endpoint">
+            <h2>GET /api/v1/timeseries/experiments/{id}/statistics</h2>
+            <p><strong>Summary:</strong> Get statistical analysis of time series data</p>
+            <p><strong>Path Parameter:</strong> id (integer) - Experiment ID</p>
+            <p><strong>Query Parameters:</strong></p>
+            <ul>
+              <li><code>format</code> (string): json (default), csv, xml</li>
+              <li><code>series_name</code> (string): Filter by specific series</li>
+              <li><code>parameter_name</code> (string): Filter by specific parameter</li>
+              <li><code>include_percentiles</code> (boolean): Include 25th, 50th, 75th percentiles</li>
+            </ul>
+            <p><strong>Responses:</strong></p>
+            <ul>
+              <li>200: Statistical analysis results</li>
+              <li>404: Experiment not found</li>
+              <li>500: Internal server error</li>
+            </ul>
+            <p><strong>Example Request:</strong></p>
+            <pre><code>GET /api/v1/timeseries/experiments/5/statistics?include_percentiles=true HTTP/1.1
+Host: localhost:8050</code></pre>
+            <p><strong>Example Response (200):</strong></p>
+            <pre><code>{
+  "success": true,
+  "timestamp": "2025-11-02T10:00:00Z",
+  "data": [
+    {
+      "parameter_name": "temperature",
+      "series_name": "Aspirin_Synthesis_001",
+      "count": 100,
+      "min_value": 20.0,
+      "max_value": 80.0,
+      "avg_value": 45.5,
+      "std_dev": 12.3,
+      "coefficient_of_variation": 0.27,
+      "range": 60.0,
+      "percentile_25": 35.0,
+      "percentile_50": 45.0,
+      "percentile_75": 55.0
+    }
+  ]
+}</code></pre>
+          </div>
+          <div class="endpoint">
+            <h2>GET /api/v1/timeseries/export</h2>
+            <p><strong>Summary:</strong> Bulk export time series data from multiple experiments</p>
+            <p><strong>Query Parameters:</strong></p>
+            <ul>
+              <li><code>format</code> (string): json (default), csv, xml</li>
+              <li><code>experiment_ids</code> (string): Comma-separated list of experiment IDs (max 50)</li>
+              <li><code>parameters</code> (string): Comma-separated list of parameter names</li>
+              <li><code>date_from</code> (YYYY-MM-DD): Start date filter</li>
+              <li><code>date_to</code> (YYYY-MM-DD): End date filter</li>
+              <li><code>include_metadata</code> (boolean): Include experiment metadata</li>
+            </ul>
+            <p><strong>Responses:</strong></p>
+            <ul>
+              <li>200: Bulk export data in requested format</li>
+              <li>400: Bad request - invalid parameters or too many experiments</li>
+              <li>500: Internal server error</li>
+            </ul>
+            <p><strong>Example Request:</strong></p>
+            <pre><code>GET /api/v1/timeseries/export?experiment_ids=5,6&parameters=temperature,pressure&format=csv HTTP/1.1
+Host: localhost:8050</code></pre>
+            <p><strong>Example Response (200 - CSV format):</strong></p>
+            <pre><code>experiment_id,series_name,parameter_name,time_step,timestamp,value,unit,notes
+5,Aspirin_Synthesis_001,temperature,1,2025-01-01T10:00:00Z,25.0,°C,
+5,Aspirin_Synthesis_001,pressure,1,2025-01-01T10:00:00Z,1.0,atm,
+6,Aspirin_Synthesis_002,temperature,1,2025-01-02T10:00:00Z,26.0,°C,</code></pre>
+          </div>
+        </details>
+
         <!-- New LIMS Experiments Endpoints -->
         <details>
           <summary>LIMS Experiments Endpoints</summary>

@@ -555,6 +555,346 @@ paths:
                   $ref: '#/components/schemas/Measurement'
         '500':
           description: Internal server error.
+  /api/v1/timeseries/experiments:
+    get:
+      summary: Get all time series experiments
+      parameters:
+        - in: query
+          name: format
+          schema:
+            type: string
+            enum: [json, csv, xml]
+            default: json
+          description: Response format (json, csv, xml)
+        - in: query
+          name: include_metadata
+          schema:
+            type: boolean
+            default: false
+          description: Include experiment metadata in response
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 1000
+            default: 100
+          description: Maximum number of experiments to return
+        - in: query
+          name: offset
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+          description: Number of experiments to skip for pagination
+      responses:
+        '200':
+          description: List of time series experiments
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TimeSeriesResponse'
+            text/csv:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+        '400':
+          description: Bad request - invalid parameters
+        '500':
+          description: Internal server error
+  /api/v1/timeseries/experiments/{id}:
+    parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+        description: Experiment ID
+    get:
+      summary: Get specific time series experiment
+      parameters:
+        - in: query
+          name: format
+          schema:
+            type: string
+            enum: [json, csv, xml]
+            default: json
+          description: Response format
+      responses:
+        '200':
+          description: Time series experiment details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TimeSeriesResponse'
+            text/csv:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+        '404':
+          description: Experiment not found
+        '500':
+          description: Internal server error
+  /api/v1/timeseries/experiments/{id}/series:
+    parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+        description: Experiment ID
+    get:
+      summary: Get time series names for an experiment
+      parameters:
+        - in: query
+          name: format
+          schema:
+            type: string
+            enum: [json, csv, xml]
+            default: json
+          description: Response format
+        - in: query
+          name: include_stats
+          schema:
+            type: boolean
+            default: false
+          description: Include statistical analysis for each series
+        - in: query
+          name: parameters
+          schema:
+            type: string
+          description: Comma-separated list of parameter names to filter
+      responses:
+        '200':
+          description: List of time series names with optional statistics
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TimeSeriesResponse'
+            text/csv:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+        '404':
+          description: Experiment not found
+        '500':
+          description: Internal server error
+  /api/v1/timeseries/experiments/{id}/data:
+    parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+        description: Experiment ID
+    get:
+      summary: Get time series data for an experiment
+      parameters:
+        - in: query
+          name: format
+          schema:
+            type: string
+            enum: [json, csv, xml, plotly_json]
+            default: json
+          description: Response format (plotly_json for direct visualization)
+        - in: query
+          name: series_name
+          schema:
+            type: string
+          description: Filter by specific series name
+        - in: query
+          name: parameter_name
+          schema:
+            type: string
+          description: Filter by specific parameter name
+        - in: query
+          name: time_range_start
+          schema:
+            type: string
+            format: date-time
+          description: Start of time range filter (ISO 8601)
+        - in: query
+          name: time_range_end
+          schema:
+            type: string
+            format: date-time
+          description: End of time range filter (ISO 8601)
+        - in: query
+          name: sampling
+          schema:
+            type: string
+            enum: [every_nth, time_interval]
+          description: Data sampling method
+        - in: query
+          name: sampling_value
+          schema:
+            type: integer
+          description: Sampling value (nth point or interval in seconds)
+        - in: query
+          name: aggregation
+          schema:
+            type: string
+            enum: [avg, min, max, sum, count]
+          description: Data aggregation method
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 50000
+            default: 10000
+          description: Maximum number of data points per parameter
+      responses:
+        '200':
+          description: Time series data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TimeSeriesResponse'
+            text/csv:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+        '404':
+          description: Experiment not found
+        '500':
+          description: Internal server error
+    post:
+      summary: Add time series data to an experiment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TimeSeriesDataBulkInsert'
+      responses:
+        '201':
+          description: Data successfully added
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TimeSeriesResponse'
+        '400':
+          description: Bad request - invalid data format
+        '404':
+          description: Experiment not found
+        '500':
+          description: Internal server error
+  /api/v1/timeseries/experiments/{id}/statistics:
+    parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+        description: Experiment ID
+    get:
+      summary: Get statistical analysis of time series data
+      parameters:
+        - in: query
+          name: format
+          schema:
+            type: string
+            enum: [json, csv, xml]
+            default: json
+          description: Response format
+        - in: query
+          name: series_name
+          schema:
+            type: string
+          description: Filter by specific series name
+        - in: query
+          name: parameter_name
+          schema:
+            type: string
+          description: Filter by specific parameter name
+        - in: query
+          name: include_percentiles
+          schema:
+            type: boolean
+            default: false
+          description: Include 25th, 50th, and 75th percentiles
+      responses:
+        '200':
+          description: Statistical analysis results
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TimeSeriesResponse'
+            text/csv:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+        '404':
+          description: Experiment not found
+        '500':
+          description: Internal server error
+  /api/v1/timeseries/export:
+    get:
+      summary: Bulk export time series data from multiple experiments
+      parameters:
+        - in: query
+          name: format
+          schema:
+            type: string
+            enum: [json, csv, xml]
+            default: json
+          description: Response format
+        - in: query
+          name: experiment_ids
+          schema:
+            type: string
+          description: Comma-separated list of experiment IDs (max 50)
+        - in: query
+          name: parameters
+          schema:
+            type: string
+          description: Comma-separated list of parameter names to include
+        - in: query
+          name: date_from
+          schema:
+            type: string
+            format: date
+          description: Start date filter (YYYY-MM-DD)
+        - in: query
+          name: date_to
+          schema:
+            type: string
+            format: date
+          description: End date filter (YYYY-MM-DD)
+        - in: query
+          name: include_metadata
+          schema:
+            type: boolean
+            default: false
+          description: Include experiment metadata in export
+      responses:
+        '200':
+          description: Bulk export data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TimeSeriesResponse'
+            text/csv:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+        '400':
+          description: Bad request - invalid parameters or too many experiments
+        '500':
+          description: Internal server error
 components:
   schemas:
     Molecule:
@@ -730,3 +1070,160 @@ components:
         measurement_date:
           type: string
           format: date-time
+    TimeSeriesResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        data:
+          oneOf:
+            - type: array
+              items:
+                $ref: '#/components/schemas/TimeSeriesExperiment'
+            - type: array
+              items:
+                $ref: '#/components/schemas/TimeSeriesDataPoint'
+            - type: object
+        message:
+          type: string
+        total_count:
+          type: integer
+        has_more:
+          type: boolean
+        pagination:
+          $ref: '#/components/schemas/PaginationInfo'
+    TimeSeriesExperiment:
+      type: object
+      properties:
+        experiment_id:
+          type: integer
+        series_name:
+          type: string
+        description:
+          type: string
+        created_date:
+          type: string
+          format: date-time
+        parameter_count:
+          type: integer
+        data_points_count:
+          type: integer
+        metadata:
+          type: object
+          additionalProperties: true
+    TimeSeriesDataPoint:
+      type: object
+      properties:
+        experiment_id:
+          type: integer
+        series_name:
+          type: string
+        parameter_name:
+          type: string
+        time_step:
+          type: integer
+        timestamp:
+          type: string
+          format: date-time
+        value:
+          type: number
+          format: decimal
+        unit:
+          type: string
+        notes:
+          type: string
+    TimeSeriesStatistics:
+      type: object
+      properties:
+        parameter_name:
+          type: string
+        series_name:
+          type: string
+        count:
+          type: integer
+        min_value:
+          type: number
+          format: decimal
+        max_value:
+          type: number
+          format: decimal
+        avg_value:
+          type: number
+          format: decimal
+        std_dev:
+          type: number
+          format: decimal
+        coefficient_of_variation:
+          type: number
+          format: decimal
+        range:
+          type: number
+          format: decimal
+        percentile_25:
+          type: number
+          format: decimal
+        percentile_50:
+          type: number
+          format: decimal
+        percentile_75:
+          type: number
+          format: decimal
+    TimeSeriesDataBulkInsert:
+      type: object
+      properties:
+        data_points:
+          type: array
+          items:
+            $ref: '#/components/schemas/TimeSeriesDataPointInsert'
+          maxItems: 10000
+        metadata:
+          type: object
+          properties:
+            batch_id:
+              type: string
+            source:
+              type: string
+            notes:
+              type: string
+          additionalProperties: true
+      required:
+        - data_points
+    TimeSeriesDataPointInsert:
+      type: object
+      properties:
+        series_name:
+          type: string
+        parameter_name:
+          type: string
+        time_step:
+          type: integer
+        timestamp:
+          type: string
+          format: date-time
+        value:
+          type: number
+          format: decimal
+        unit:
+          type: string
+        notes:
+          type: string
+      required:
+        - series_name
+        - parameter_name
+        - time_step
+        - value
+    PaginationInfo:
+      type: object
+      properties:
+        current_page:
+          type: integer
+        per_page:
+          type: integer
+        total_items:
+          type: integer
+        total_pages:
+          type: integer
+        has_next:
+          type: boolean
+        has_previous:
+          type: boolean
