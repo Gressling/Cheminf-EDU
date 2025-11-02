@@ -137,17 +137,18 @@ input:focus, textarea:focus, select:focus {
 /* Table styling for DataTables */
 .dash-table-container .dash-spreadsheet-container .dash-spreadsheet-inner table {
     background-color: var(--card-bg) !important;
+    color: white !important;
 }
 
 .dash-table-container .dash-spreadsheet-container .dash-spreadsheet-inner th {
     background-color: var(--header-bg) !important;
-    color: var(--header-text) !important;
+    color: white !important;
     border: 1px solid var(--border-color) !important;
 }
 
 .dash-table-container .dash-spreadsheet-container .dash-spreadsheet-inner td {
     background-color: var(--card-bg) !important;
-    color: var(--text-color) !important;
+    color: white !important;
     border: 1px solid var(--border-color) !important;
 }
 

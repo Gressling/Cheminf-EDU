@@ -24,6 +24,10 @@ import cheminf.lims_experiments.ui_experiments  # LIMS experiments UI page
 import cheminf.lims_experiments.ui_samples      # LIMS samples UI page
 import cheminf.lims_experiments.ui_measurements # LIMS measurements UI page
 
+# --- Import Time Series modules ---
+import cheminf.time_series.rest_api           # REST API endpoints for time series
+import cheminf.time_series.ui_timeseries      # Time Series analysis UI page
+
 # Load configuration from settings.json
 from cheminf.config import INSTANCE_NAME
 server.secret_key = 'dev_secret_key_change_in_production'  # Should be in settings.json for production
@@ -255,12 +259,17 @@ START_PAGE = """
           <li><a href="/samples/" target="mainFrame">Samples</a></li>
           <li><a href="/measurements/" target="mainFrame">Measurements</a></li>
         </ul>
+        <h2>Time Series Analysis</h2>
+        <ul>
+          <li><a href="/timeseries/" target="mainFrame">Time Series Charts</a></li>
+        </ul>
         <h2>REST Resources</h2>
         <ul>
           <li><a href="/api/molecules" target="mainFrame">REST API: Molecules Data (JSON)</a></li>
           <li><a href="/api/inventory" target="mainFrame">REST API: Inventory Data (JSON)</a></li>
           <li><a href="/api/projects" target="mainFrame">Projects API (JSON)</a></li>
           <li><a href="/api/reactions" target="mainFrame">REST API: Reactions Data (old) (JSON)</a></li>
+          <li><a href="/api/timeseries/experiments" target="mainFrame">REST API: Time Series Experiments (JSON)</a></li>
           <li><a href="/static/REST_documentation.html" target="mainFrame">REST API Documentation</a></li>
         </ul>
         <!-- Footer navigation with Logout -->
